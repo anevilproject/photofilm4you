@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<ul xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:h="http://java.sun.com/jsf/html"
+    class="nav category-list px-4 py-2">
+    <li class="nav-item category-list-item">
+        <h:link outcome="/catalog/showCatalog" value="Tots" styleClass="nav-link"/>
+    </li>
+
+    <c:forEach items="#{frontCategoriesBean.categoryTree.rootNodes}" var="category">
+        <c:choose>
+            <c:when test="${category.parent}">
+                <li class="nav-item category-list-item dropdown">
+                    <h:link outcome="/catalog/showCatalog" value="#{category.name}"
+                            styleClass="nav-link dropdown-toggle">
+                        <f:param name="categoryId" value="#{category.id}"/>
+                    </h:link>
+                    <ul class="dropdown-menu multi-level" role="menu">
+                        <c:forEach items="#{category.children}" var="child">
+                            <c:choose>
+                                <c:when test="${child.parent}">
+                                    <li class="dropdown-submenu dropdown-item">
+                                        <h:link outcome="/catalog/showCatalog">
+                                            <f:param name="categoryId" value="#{child.id}"/>
+                                            #{child.name} <i class="fas fa-caret-right"/>
+                                        </h:link>
+                                        <ul class="dropdown-menu submenu">
+                                            <c:forEach items="#{child.children}" var="leaf">
+                                                <h:link outcome="/catalog/showCatalog" value="#{leaf.name}"
+                                                        styleClass="dropdown-item">
+                                                    <f:param name="categoryId" value="#{leaf.id}"/>
+                                                </h:link>
+                                            </c:forEach>
+                                        </ul>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <h:link outcome="/catalog/showCatalog" value="#{child.name}"
+                                            styleClass="dropdown-item">
+                                        <f:param name="categoryId" value="#{child.id}"/>
+                                    </h:link>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </ul>
+                </li>
+            </c:when>
+            <c:otherwise>
+                <li class="nav-item category-list-item">
+                    <h:link outcome="/catalog/showCatalog" value="#{category.name}" styleClass="nav-link">
+                        <f:param name="categoryId" value="#{category.id}"/>
+                    </h:link>
+                </li>
+            </c:otherwise>
+        </c:choose>
+    </c:forEach>
+</ul>

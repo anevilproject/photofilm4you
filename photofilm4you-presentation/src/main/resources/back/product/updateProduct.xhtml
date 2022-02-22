@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+
+<f:metadata>
+    <f:viewParam name="productId" value="#{productBean.id}"/>
+</f:metadata>
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <div class="card card-cascade narrower mb-5">
+            <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                <!-- AFEGIR o MODIFICAR un producte. AFEGIR imatge. -->
+
+                <h6>
+                    <h:outputText rendered="#{productBean.item.id==null}" value="Crear producte"/>
+                    <h:outputText rendered="#{productBean.item.id!=null}"
+                                  value="Modificar producte: #{productBean.item.name}"/>
+                </h6>
+            </div>
+
+            <h:form role="form" class="form-inline" p:enctype="multipart/form-data">
+                <div class="formDiv">
+
+                    <div><label for="productName">Nom</label></div>
+                    <div>
+                        <h:inputText value="#{productBean.item.name}" type="text" style="width:100%;"
+                                     class="form-control" id="productName" maxlength="50"
+                                     p:placeholder="Introdueix un nom"/>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="productName"/>
+                        </small>
+                    </div>
+
+                    <div><label for="productDailyPrice">Preu / dia</label></div>
+                    <div>
+                        <h:inputText value="#{productBean.item.dailyPrice}" style="width:100%;"
+                                     class="form-control" id="productDailyPrice"
+                                     onblur="formatPriceField(this)"
+                                     p:placeholder="Introdueix un preu">
+                            <f:convertNumber locale="es_ES" minFractionDigits="2" maxFractionDigits="2"/>
+                        </h:inputText>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="productDailyPrice"/>
+                        </small>
+                    </div>
+
+                    <div><label for="productDescription">Descripció</label></div>
+                    <div>
+                        <h:inputTextarea value="#{productBean.item.description}" style="width:100%;"
+                                         class="form-control" id="productDescription"
+                                         p:placeholder="Introdueix una descripció"/>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="productDescription"/>
+                        </small>
+                    </div>
+
+                    <div><label for="productCategoryId">Categoria</label></div>
+                    <div>
+                        <h:selectOneListbox value="#{productBean.item.category}" style="width:100%;" size="1"
+                                            class="browser-default custom-select" id="productCategoryId">
+                            <f:selectItem itemLabel="Seleccione un categoria" itemValue="#{null}" itemDisabled="true"/>
+                            <f:selectItems value="#{categoryBean.allCategorySelectItems}"/>
+                        </h:selectOneListbox>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="productCategoryId"/>
+                        </small>
+                    </div>
+
+                    <div><label for="productModelId">Model</label></div>
+                    <div>
+                        <h:selectOneListbox value="#{productBean.item.model}" style="width:100%;" size="1"
+                                            class="browser-default custom-select" id="productModelId">
+                            <f:selectItem itemLabel="Seleccione un model" itemValue="#{null}" itemDisabled="true"/>
+                            <f:selectItems value="#{productBean.modelSelectItems}"/>
+                        </h:selectOneListbox>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="productModelId"/>
+                        </small>
+                    </div>
+
+                    <div><label for="productDescription">Valoració</label></div>
+                    <div>
+                        <h:inputText value="#{productBean.item.rating}" style="width:100%;"
+                                     class="form-control" id="productRating" readonly="true"
+                                     p:placeholder="Sense valoració"/>
+                    </div>
+                    <div><label for="productImage">Imatge</label></div>
+                    <c:if test="#{productBean.item.image != null}">
+                        <div>
+                            <h:graphicImage rendered="#{productBean.item.image != null}"
+                                            value="/image/#{productBean.item.image.id}"/>
+                        </div>
+
+                        <div><label/></div>
+                    </c:if>
+                    <div>
+                        <h:inputFile value="#{productBean.file}" styleClass="form-control" style="width:100%;" size="1"
+                                     p:accept=".jpg,.jpeg,.png" id="productImage" onchange="checkFileSize(this)"/>
+                        <small class="text-muted">
+                            Es recomana que la imatge tengui un aspect ratio aproximat de 2:1 o el fons blanc.
+                        </small>
+                    </div>
+                    <div class="formSubmit">
+                        <h:commandButton value="#{productBean.item.id == null ? 'Accepta' : 'Modifica'}"
+                                         type="submit"
+                                         styleClass="btn btn-primary btn-form blue"
+                                         action="#{productBean.save}"/>
+                        <h:button value="Cancel·la"
+                                  styleClass="btn btn-primary btn-form white"
+                                  outcome="listProducts.xhtml"/>
+                    </div>
+                </div>
+                <h:inputHidden value="#{productBean.id}"/>
+                <h:inputHidden value="#{productBean.source}"/>
+            </h:form>
+        </div>
+
+        <h:panelGroup rendered="#{productBean.item.id!=null}">
+            <div class="card card-cascade narrower">
+                <!--Card header-->
+                <div class="view view-cascade py-3 gradient-card-header bkgd-green-color">
+                    <h6>Llistat d'items del producte</h6>
+                </div>
+
+                <div class="card-body">
+                    <div class="table text-nowrap nomargin-bottom">
+                        <ui:include src="/WEB-INF/component/back/itemList.xhtml">
+                            <ui:param name="items" value="#{productBean.productItems}"/>
+                            <ui:param name="rowClasses" value="#{productBean.itemRowClass}"/>
+                        </ui:include>
+                    </div>
+                </div>
+            </div>
+        </h:panelGroup>
+
+        <script type="application/javascript">
+            //<![CDATA[
+            function formatPriceField(input) {
+                let field = $(input);
+                let value = parseFloat(field.val().replace(',', '.'));
+
+                if (isNaN(value)) {
+                    value = 0;
+                }
+                field.val(('' + value.toFixed(2)).replace('.', ','))
+            }
+
+            function checkFileSize(input) {
+                let maxBytes = #{productBean.maxFileSize};
+
+                if (input.files && input.files[0] && input.files[0].size > maxBytes) {
+                    showSnackbarError('El fitxer seleccionat es massa gran (> #{productBean.maxFileSizeFormatted})');
+
+                    input.value = null;
+                }
+            }
+
+            //]]>
+        </script>
+
+
+    </ui:define>
+</ui:composition>
+</html>

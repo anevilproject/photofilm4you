@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Photo &amp; Film 4 You - ADMIN</title>
+
+    <link rel="icon" href="#{resource['images:favicon.svg']}" sizes="any" type="image/svg+xml"/>
+
+    <!-- Font Awesome -->
+    <h:outputStylesheet library="css" name="fontawesome.all.css"/>
+    <!-- Roboto -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet"/>
+
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    <h:outputStylesheet library="css" name="mdb.min.css"/>
+    <h:outputStylesheet library="css" name="style.css"/>
+
+    <h:outputScript library="js" name="jquery.min.js"/>
+    <h:outputScript library="js" name="popper.min.js"/>
+    <h:outputScript library="js" name="bootstrap.min.js"/>
+    <h:outputScript library="js" name="mdb.min.js"/>
+    <h:outputScript library="js" name="main.js"/>
+</h:head>
+
+<h:body styleClass="fixed-sn fixed-nav">
+
+    <!--Main Navigation-->
+    <header>
+        <ui:include src="menuAdmin.xhtml"/>
+    </header>
+    <!--Main Navigation-->
+
+    <!-- Snackbar -->
+    <ui:include src="/WEB-INF/component/snackbar.xhtml"/>
+
+    <!--Main content-->
+    <main class="container-fluid ml-0 pt-5">
+        <div class="main-content px-5">
+            <ui:insert name="content">Content</ui:insert>
+        </div>
+
+        <!-- Footer -->
+        <footer class="justify-content-center flex-column footer text-center">
+            <span>Copyright© 2020 - Grup 5</span>
+        </footer>
+    </main>
+
+    <!-- Drain unhandled messages (would not be necessary in JSF production mode) -->
+    <div style="display: none">
+        <h:messages/>
+    </div>
+</h:body>
+</html>
+

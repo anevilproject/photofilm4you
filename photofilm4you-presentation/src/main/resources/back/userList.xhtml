@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+
+        <section class="mb-3">
+            <h:link outcome="/back/registerAdministrator" styleClass="btn btn-primary white">
+                <i class="fas fa-plus"/>
+                Registrar un administrador
+            </h:link>
+        </section>
+
+        <section class="mb-5 mt-4">
+            <div class="card card-cascade narrower">
+                <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                    <h6>Administradors registrats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <ui:include src="/WEB-INF/component/back/userList.xhtml">
+                            <ui:param name="users" value="#{userBean.administratorList}"/>
+                            <ui:param name="customer" value="#{false}"/>
+                        </ui:include>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <div class="card card-cascade narrower">
+                <div class="view view-cascade py-3 gradient-card-header bkgd-green-color">
+                    <h6>Customers registrats</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <ui:include src="/WEB-INF/component/back/userList.xhtml">
+                            <ui:param name="users" value="#{userBean.customerList}"/>
+                            <ui:param name="customer" value="#{true}"/>
+                        </ui:include>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>

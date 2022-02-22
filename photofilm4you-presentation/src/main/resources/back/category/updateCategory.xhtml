@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<f:metadata>
+    <f:viewParam name="categoryId" value="#{categoryBean.id}"/>
+</f:metadata>
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <div class="card card-cascade narrower mb-5">
+            <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                <!-- AFEGIR o MODIFICAR una categoria -->
+                <h6>
+                    <h:outputText rendered="#{categoryBean.item.id==null}" styleClass="bkgd-grey-color"
+                                  value="Crear categoria"/>
+                    <h:outputText rendered="#{categoryBean.item.id!=null}"
+                                  value="Modificar categoria: #{categoryBean.item.name}"/>
+                </h6>
+            </div>
+            <h:form id="category" role="form" class="form-inline">
+                <h:inputHidden value="#{categoryBean.id}"/>
+
+                <div class="formDiv">
+                    <div><label for="categoryName">Nom</label></div>
+                    <div>
+                        <h:inputText value="#{categoryBean.item.name}" type="text" style="width:100%;"
+                                     class="form-control" id="categoryName" maxlength="150"
+                                     p:placeholder="Introdueix un nom"/>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="categoryName"/>
+                        </small>
+                    </div>
+
+                    <div><label for="categoryParentId">Pare</label></div>
+                    <div>
+                        <h:selectOneListbox
+                                value="#{categoryBean.item.parent}"
+                                style="width:100%;" size="1"
+                                class="browser-default custom-select" id="categoryParentId">
+                            <f:selectItem itemLabel="Sense pare" itemValue="#{null}"/>
+                            <f:selectItems value="#{categoryBean.allCategorySelectItems}"/>
+                        </h:selectOneListbox>
+                    </div>
+
+                    <div class="formSubmit">
+                        <h:commandButton value="#{categoryBean.item.id==null?'Accepta':'Modifica'}"
+                                         type="submit"
+                                         styleClass="btn btn-primary btn-form blue"
+                                         action="#{categoryBean.save}"/>
+                        <h:button value="Cancel·la" styleClass="btn btn-primary btn-form white"
+                                  outcome="listCategories.xhtml"/>
+                    </div>
+                </div>
+                <h:inputHidden value="#{categoryBean.source}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

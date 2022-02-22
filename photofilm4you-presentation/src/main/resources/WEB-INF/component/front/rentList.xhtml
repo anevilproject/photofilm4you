@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:repeat value="#{rents}" var="rent">
+        <h:link outcome="/customer/rent/showRent.xhtml" styleClass="card-link">
+            <f:param name="rentId" value="#{rent.id}"/>
+            <div class="card">
+                <div class="card-body">
+                    <div class="cart-title">
+                        <h:outputText value="#{rent.id}"/>
+                    </div>
+                    <h:panelGroup rendered="#{rent.status == 'CANCELLED'}" styleClass="title" layout="block">
+                        Lloguer cancel·lat <i class="fas fa-times text-danger"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{rent.status == 'CONFIRMED'}" styleClass="title" layout="block">
+                        Lloguer confirmat <i class="fas fa-check text-success"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{rent.status == 'NOT_CONFIRMED'}" styleClass="title" layout="block">
+                        Lloguer pendent de pagament <i class="fas fa-clock"/>
+                    </h:panelGroup>
+                    <div>
+                        <small class="text-muted mt-3">
+                            <h:outputText value="#{rentBean.formatCreationDate(rent)}"/>
+                        </small>
+                    </div>
+                    <div class="mt-2">
+                        <span class="date-display">
+                            <h:outputText value="#{rentBean.formatDate(rent.from)}"/>
+                        </span>
+                        <span class="date-arrow">
+                            <i class="fas fa-long-arrow-alt-right"/>
+                        </span>
+                        <span class="date-display mr-3">
+                            <h:outputText value="#{rentBean.formatDate(rent.to)}"/>
+                        </span>
+                    </div>
+                    <div class="rent-price text-muted mt-3">
+                        Import total
+                        <span class="amount">
+                            #{rent.totalPrice} €
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </h:link>
+    </ui:repeat>
+</div>

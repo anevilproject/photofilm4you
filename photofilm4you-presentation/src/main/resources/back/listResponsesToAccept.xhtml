@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+>
+
+<ui:composition template="../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <section class="mb-5">
+
+            <div class="card card-cascade narrower">
+                <!--Card header-->
+                <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                    <h6>Respostes per acceptar</h6>
+                </div>
+                <!--/Card header-->
+
+                <!--Card content-->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <h:dataTable value="#{listResponsesBean.responses}" var="item"
+                                     styleClass="table text-nowrap nomargin-bottom"
+                                     width="100%">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="Pregunta"/>
+                                </f:facet>
+                                <h:link outcome="/forum/showQuestion" styleClass="card-link"
+                                        value="#{item.question.title}">
+                                    <f:param name="questionId" value="#{item.question.id}"/>
+                                </h:link>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="Resposta"/>
+                                </f:facet>
+                                <h:outputText value="#{item.message}"/>
+                            </h:column>
+                            <h:column headerClass="colRes">
+                                <f:facet name="header">
+                                    <h:outputText value="Imatges"/>
+                                </f:facet>
+                                <ui:repeat value="#{item.images}" var="image">
+                                    <span id="#{image.image.id}" class="cursor-pointer"
+                                          onclick="displayImage('#{image.image.id}')">
+                                        <h:graphicImage value="/image/#{image.image.id}"/>
+                                    </span>
+                                </ui:repeat>
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <i class="fas fa-check" title="Acceptar" data-toggle="modal"
+                                   data-target="#ResponseStatusModal"
+                                   onclick="responseStatusChange('#{item.id}', 'APPROVED');"/>
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <i class="fas fa-times" title="Rebutjar" data-toggle="modal"
+                                   data-target="#ResponseStatusModal"
+                                   onclick="responseStatusChange('#{item.id}', 'REJECTED');"/>
+                            </h:column>
+
+                        </h:dataTable>
+                        <hr class="my-0"/>
+                    </div>
+                </div>
+                <!--/.Card content-->
+            </div>
+            <!--/.Card-->
+        </section>
+
+        <h:form id="ResponseStatusForm">
+            <!-- Modal -->
+            <div class="modal fade" id="ResponseStatusModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content eliminar">
+                        <div class="modal-header">
+                            <h5 id="modalTitle" class="modal-title">Acceptar resposta?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modalBody">Estàs acceptant la resposta i aquesta será visible per tothom.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary flat white" data-dismiss="modal">CANCEL·LA
+                            </button>
+                            <h:commandButton type="submit" id="modalAction" value="ACCEPTA" class="btn btn-primary flat"
+                                             action="#{listResponsesBean.changeStatus}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:inputHidden value="#{listResponsesBean.source}"/>
+            <h:inputHidden value="#{listResponsesBean.id}" id="ResponseId"></h:inputHidden>
+
+            <h:selectOneListbox id="ResponseStatus" value="#{listResponsesBean.status}" class="form-control" size="1"
+                                style="display:none;">
+                <c:forEach items="#{listResponsesBean.statusItems}" var="status">
+                    <f:selectItem itemValue="#{status}"/>
+                </c:forEach>
+            </h:selectOneListbox>
+        </h:form>
+
+        <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered image-modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function responseStatusChange(id, status) {
+                console.log("change");
+                $('#ResponseStatusForm\\:ResponseId').val(id);
+                $('#ResponseStatusForm\\:ResponseStatus').val(status);
+                $('#modalTitle').html((status == "APPROVED" ? "Aprovar resposta?" : "Rebutjar resposta?"));
+                $('#modalBody').html((status == "APPROVED" ? 'Estàs aprovant la resposta i aquesta será visible per tothom.' : "Estàs rebutjant la resposta i aquesta NO serà visible."));
+                $('#ResponseStatusForm\\:modalAction').val((status == "APPROVED" ? "APROVA" : "REBUTJA"));
+            }
+
+            function displayImage(id) {
+                $('#imgModal .modal-body').html($('#' + id).html());
+                $('#imgModal').modal('show');
+            }
+        </script>
+
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <!-- LLISTAT de marques. ELIMINAR una marca -->
+        <section class="mb-5">
+            <div class="create-item">
+                <div>
+                    <span><h:link class="btn btn-primary white full" outcome="updateBrand"><i
+                            class="fas fa-plus"/> Crear marca</h:link></span>
+                </div>
+            </div>
+            <div class="card card-cascade narrower">
+                <!--Card header-->
+                <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                    <h6>Llistat de marques</h6>
+                </div>
+                <!--/Card header-->
+
+                <!--Card content-->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <h:dataTable value="#{brandBean.allItems}" var="item" rowClasses="#{brandBean.rowClass}"
+                                     styleClass="table text-nowrap nomargin-bottom"
+                                     width="100%"
+                                     binding="#{table}">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="#"/>
+                                </f:facet>
+                                <h:outputText value="#{table.rowIndex + 1}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="Marca"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <h:link outcome="updateBrand" rendered="#{item.deleted==null}">
+                                    <f:param name="brandId" value="#{item.id}"/>
+                                    <i class="fas fa-pen"></i>
+                                </h:link>
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <h:panelGroup rendered="#{item.deleted==null}">
+                                    <i class="fas fa-trash-alt" data-toggle="modal" data-target="#BrandDeleteModal"
+                                       onclick="$('#BrandDelete\\:deleteBrandId').val('#{item.id}')"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{item.deleted!=null}">
+                                    <i class="fas fa-history" data-toggle="modal" data-target="#BrandReactivateModal"
+                                       onclick="$('#BrandReactivate\\:reactivateBrandId').val('#{item.id}')"/>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                        <hr class="my-0"/>
+                    </div>
+                </div>
+                <!--/.Card content-->
+            </div>
+            <!--/.Card-->
+        </section>
+
+        <h:form id="BrandDelete">
+            <!-- Modal -->
+            <div class="modal fade" id="BrandDeleteModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content eliminar">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Eliminar marca?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Estàs segur que vols eliminar aquesta marca? Tots les productes associats a aquesta marca també es marcaran com eliminats i no apareixeran al front.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <h:column>
+                                <button type="button" class="btn btn-primary flat white"
+                                        data-dismiss="modal">CANCEL·LA
+                                </button>
+                            </h:column>
+                            <h:column><h:commandButton type="submit" value="ELIMINA" class="btn btn-primary flat"
+                                                       action="#{brandBean.delete}"/>
+                            </h:column>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:inputHidden value="#{brandBean.source}"/>
+            <h:inputHidden value="#{brandBean.id}" id="deleteBrandId"></h:inputHidden>
+        </h:form>
+        <h:form id="BrandReactivate">
+            <!-- Modal -->
+            <div class="modal fade" id="BrandReactivateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content eliminar">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reactivar marca?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>La reactivació de la marca no reactiva la resta d'elements associats històricament a aquesta.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <h:column>
+                                <button type="button" class="btn btn-primary flat white"
+                                        data-dismiss="modal">CANCEL·LA
+                                </button>
+                            </h:column>
+                            <h:column><h:commandButton type="submit" value="REACTIVA" class="btn btn-primary flat"
+                                                       action="#{brandBean.reactivate()}"/>
+                            </h:column>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:inputHidden value="#{brandBean.source}"/>
+            <h:inputHidden value="#{brandBean.id}" id="reactivateBrandId"></h:inputHidden>
+        </h:form>
+
+    </ui:define>
+</ui:composition>
+</html>

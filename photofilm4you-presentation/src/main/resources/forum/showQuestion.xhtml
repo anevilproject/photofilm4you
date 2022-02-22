@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<f:metadata>
+    <f:viewParam name="questionId" value="#{showQuestionBean.id}"/>
+</f:metadata>
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <div class="container">
+            <div class="page-title forum-title">
+                <h:link outcome="/forum/listQuestions" styleClass="back-link">
+                    <i class="back-button fas fa-arrow-left"/>
+                </h:link>
+                Fòrum de preguntes
+            </div>
+
+            <div class="question-view">
+                <div class="question-title">
+                    #{showQuestionBean.question.title}
+                </div>
+                <small class="publisher">
+                    #{frontProductBean.formatReviewDate(showQuestionBean.question.created)} per #{showQuestionBean.question.customer.fullName}
+                </small>
+                <div class="question-message">
+                    #{showQuestionBean.question.message}
+                </div>
+                <hr/>
+            </div>
+
+            <div class="responses-view">
+                <div class="response-number">
+                    <c:if test="#{showQuestionBean.responses.size() == 0}">
+                        Sense respostes
+                    </c:if>
+                    <c:if test="#{showQuestionBean.responses.size() > 0}">
+                        #{showQuestionBean.responses.size()} respostes
+                    </c:if>
+                </div>
+
+                <c:forEach items="#{showQuestionBean.responses}" var="response">
+                    <ui:include src="/WEB-INF/component/front/response.xhtml">
+                        <ui:param name="response" value="#{response}"/>
+                    </ui:include>
+                </c:forEach>
+
+                <c:if test="#{showQuestionBean.customerResponses.size() > 0}">
+                    <hr class="my-4"/>
+                    <h5 class="font-weight-bold">Les teves respostes</h5>
+                    <c:forEach items="#{showQuestionBean.customerResponses}" var="response">
+                        <ui:include src="/WEB-INF/component/front/response.xhtml">
+                            <ui:param name="response" value="#{response}"/>
+                        </ui:include>
+                    </c:forEach>
+                </c:if>
+
+                <hr class="my-4"/>
+                <c:if test="#{not auth.authenticated}">
+                    <div class="mt-4 text-muted">
+                        Vols respondre aquesta pregunta? Fes
+                        <h:link outcome="/login" value="login">
+                            <f:param name="referer" value="#{auth.referer}"/>
+                        </h:link>
+                        per enviar la teva resposta.
+                    </div>
+                </c:if>
+                <c:if test="#{auth.authenticated}">
+                    <h:form id="response">
+                        <div class="form-group mt-3">
+                            <label class="font-weight-bold" for="responseMessage">
+                                Envia la teva resposta
+                            </label>
+                            <h:inputTextarea value="#{showQuestionBean.responseMessage}"
+                                             type="text"
+                                             class="form-control"
+                                             p:placeholder="Escriu la teva resposta..."
+                                             id="responseMessage"
+                                             rows="3"/>
+                            <small class="form-text text-error">
+                                <h:message class="text-danger" for="responseMessage"/>
+                            </small>
+                        </div>
+                        <div class="text-right">
+                            <h:commandLink action="#{showQuestionBean.postResponse}"
+                                           styleClass="btn btn-primary">
+                                <i class="fas fa-paper-plane mr-2"/> ENVIA
+                            </h:commandLink>
+                        </div>
+                        <h:inputHidden value="#{showQuestionBean.id}"/>
+                        <h:inputHidden value="#{showQuestionBean.source}"/>
+                    </h:form>
+                </c:if>
+            </div>
+        </div>
+
+        <div class="modal fade" id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered image-modal" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="application/javascript">
+            //<![CDATA[
+            function checkFileSize(input) {
+                let maxBytes = #{responseBean.maxFileSize};
+
+                if (input.files && input.files[0] && input.files[0].size > maxBytes) {
+                    showSnackbarError('El fitxer seleccionat es massa gran (> #{addImageResponseBean.maxFileSizeFormatted})');
+
+                    input.value = null;
+                }
+            }
+
+            function displayImage(id) {
+                $('#imgModal .modal-body').html($('#' + id).html());
+                $('#imgModal').modal('show');
+            }
+
+            //]]>
+        </script>
+    </ui:define>
+</ui:composition>
+</html>

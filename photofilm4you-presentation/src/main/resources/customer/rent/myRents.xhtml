@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="../../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <div class="profile-container">
+            <div class="row mb-4">
+                <div class="col-4 navegation-profile">
+                    <ul>
+                        <li><h:link outcome="/customer/showCustomer">El meu perfil</h:link></li>
+                        <li><h:link outcome="/customer/updateCustomer">Actualitzar el meu perfil</h:link></li>
+                        <li class="active"><a href="#">Els meus lloguers</a></li>
+                        <li><h:link outcome="/logout">Logout</h:link></li>
+                    </ul>
+                </div>
+                <div class="col-8 update-customer-container">
+                    <ui:include src="/WEB-INF/component/front/rentList.xhtml">
+                        <ui:param name="rents" value="#{myRents.rentList}"/>
+                    </ui:include>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

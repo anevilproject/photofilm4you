@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<ui:composition template="../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+
+        <div class="card card-cascade narrower mb-5">
+            <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                <h6>Registrar un administrador</h6>
+            </div>
+            <h:form id="registerAdmForm" role="form" class="form-inline">
+                <div class="formDiv">
+                    <div><label for="email">Email</label></div>
+                    <div>
+                        <h:inputText value="#{administrator.administrator.email}" type="text" style="width:100%;"
+                                     class="form-control" id="email" maxlength="50"
+                                     p:placeholder="Introdueix un email">
+                        </h:inputText>
+                        <small id="dateFromMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="email"/>
+                        </small>
+                    </div>
+
+                    <div><label for="password">Contrasenya</label></div>
+                    <div>
+                        <h:inputSecret value="#{administrator.administrator.password}" style="width:100%;"
+                                       class="form-control"
+                                       id="password" p:placeholder="Introdueix una contrasenya"/>
+                        <small id="passwordMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="password"/>
+                        </small>
+                    </div>
+
+                    <div><label for="userPasswordRepeat">Repetir contrasenya</label></div>
+                    <div>
+                        <h:inputSecret value="#{administrator.userPasswordRepeat}" style="width:100%;"
+                                       class="form-control"
+                                       id="userPasswordRepeat" p:placeholder="Repeteix la contrasenya"/>
+                        <small id="userPasswordRepeatMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="userPasswordRepeat"/>
+                        </small>
+                    </div>
+
+                    <div class="formSubmit">
+                        <h:commandButton value="Accepta"
+                                         type="submit"
+                                         styleClass="btn btn-primary btn-form blue"
+                                         action="#{administrator.save}"/>
+                        <h:button value="Cancel·la" styleClass="btn btn-primary btn-form white"
+                                  outcome="userList.xhtml"/>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

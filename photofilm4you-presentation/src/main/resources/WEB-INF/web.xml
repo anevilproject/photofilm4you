@@ -1,0 +1,92 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <context-param>
+        <description>
+            Define the value returned by Application.getProjectStage(). Allowed values: Production, Development,
+            UnitTest, SystemTest, Extension. Default value is Production.
+        </description>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <!-- Definir este parámetro es más cómodo y más visual que usar el <ui:remove> de Facelets. -->
+    <context-param>
+        <description>Do not render comments in facelets (xhtml) pages. Default is false.</description>
+        <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>resteasy.servlet.mapping.prefix</param-name>
+        <param-value>/api</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>index.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <!-- Error pages -->
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/page/403.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/page/404.xhtml</location>
+    </error-page>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/WEB-INF/page/500.xhtml</location>
+    </error-page>
+
+    <!-- Authentication -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Admin Resource</web-resource-name>
+            <url-pattern>/back/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>ADMIN</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Customer Resource</web-resource-name>
+            <url-pattern>/customer/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>CUSTOMER</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/WEB-INF/page/loginPage.xhtml</form-login-page>
+            <form-error-page>/WEB-INF/page/loginPageError.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <role-name>CUSTOMER</role-name>
+    </security-role>
+</web-app>

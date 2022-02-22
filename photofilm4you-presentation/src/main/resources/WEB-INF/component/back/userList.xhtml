@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:dataTable value="#{users}" var="user" styleClass="table text-nowrap nomargin-bottom" width="100%">
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Data creació"/>
+            </f:facet>
+            <h:outputText value="#{user.date}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Adreça eletrònica"/>
+            </f:facet>
+            <h:outputText value="#{user.email}"/>
+        </h:column>
+        <h:column rendered="#{customer}">
+            <f:facet name="header">
+                <h:outputText value="Nom"/>
+            </f:facet>
+            <h:outputText value="#{user.name}"/>
+        </h:column>
+        <h:column rendered="#{customer}">
+            <f:facet name="header">
+                <h:outputText value="Cognoms"/>
+            </f:facet>
+            <h:outputText value="#{user.surname}"/>
+        </h:column>
+        <h:column rendered="#{customer}">
+            <f:facet name="header">
+                <h:outputText value="NIF"/>
+            </f:facet>
+            <h:outputText value="#{user.nif}"/>
+        </h:column>
+        <h:column rendered="#{customer}">
+            <f:facet name="header">
+                <h:outputText value="Telèfon"/>
+            </f:facet>
+            <h:outputText value="#{user.phone}"/>
+        </h:column>
+        <h:column rendered="#{customer}">
+            <f:facet name="header">
+                <h:outputText value="Adreça"/>
+            </f:facet>
+            <h:outputText value="#{user.address}"/>
+        </h:column>
+    </h:dataTable>
+</div>

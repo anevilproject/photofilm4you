@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+>
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <!-- LLISTAT de items de producte. ELIMINAR un producte -->
+        <section class="mb-5">
+            <div class="create-item">
+                <span>
+                    <h:link class="btn btn-primary white full" outcome="updateItem">
+                        <i class="fas fa-plus"/> Crear item
+                    </h:link>
+                </span>
+            </div>
+
+            <div class="card card-cascade narrower">
+                <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                    <h6>Llistat d'ítems</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <ui:include src="/WEB-INF/component/back/itemList.xhtml">
+                            <ui:param name="items" value="#{itemBean.allItems}"/>
+                            <ui:param name="rowClasses" value="#{itemBean.rowClass}"/>
+                        </ui:include>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <div id="dateChangeText">
+        <c:if test="#{cartBean.cartActive}">
+            <a href="#" class="btn btn-primary white full" data-toggle="modal" data-target="#datesModal">
+                <span class="date-display"><h:outputText value="#{cartBean.current.fromAsString}"/></span>
+                <span class="date-arrow">
+                    <i class="fas fa-long-arrow-alt-right"/>
+                </span>
+                <span class="date-display mr-3"><h:outputText value="#{cartBean.current.toAsString}"/></span>
+            </a>
+        </c:if>
+        <c:if test="#{not cartBean.cartActive}">
+            <a href="#" class="btn btn-primary white full" data-toggle="modal" data-target="#datesModal">
+                Tria les dates del lloguer
+            </a>
+        </c:if>
+    </div>
+    <div class="modal fade" id="datesModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content dates-modal">
+                <h:form id="dateForm">
+                    <div class="modal-body px-4 pt-4">
+                        <h5 class="modal-title mb-3">Selecciona les dates del lloguer</h5>
+                        <div class="mb-3 text-muted body-text">
+                            El lloguer és vàlid per cada dia des de la data d'inici fins a la data de fi, incloses les dates
+                            especificades.
+                        </div>
+                        <div class="change-date-form">
+                            <div class="input-daterange input-group" id="datepicker">
+                                <div class="form-group mr-4">
+                                    <label for="dateFrom">Data inici</label>
+                                    <h:inputText value="#{cartBean.from}" id="dateFrom" styleClass="form-control"
+                                                 autocomplete="off" onchange="onChangeDateFrom()"/>
+                                    <small id="dateFromMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="dateFrom"/>
+                                    </small>
+                                </div>
+                                <div class="form-group mr-4">
+                                    <label for="dateFrom">Data fi</label>
+                                    <h:inputText value="#{cartBean.to}" id="dateTo" styleClass="form-control"
+                                                 autocomplete="off"/>
+                                    <small id="dateToMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="dateTo"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <c:if test="#{cartBean.cartSize > 0}">
+                            <div class="mb-3 text-danger body-text">
+                                Si canvies les dates es perdran els productes del carret.
+                            </div>
+                        </c:if>
+                        <h:inputHidden value="#{cartBean.source}"/>
+                        <h:commandButton styleClass="btn btn-primary flat"
+                                         value="Accepta"
+                                         action="#{cartBean.createCart}"/>
+                        <button type="button" class="btn btn-primary white flat" data-dismiss="modal">CANCEL·LA</button>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(window).on('load', function () {
+            $('.change-date-form .input-daterange').datepicker({
+                format: "dd/mm/yyyy",
+                startDate: "#{availabilityBean.minDate}",
+                endDate: "#{availabilityBean.maxDate}",
+                language: "ca"
+            });
+
+            $('#datesModal').on('shown.bs.modal', function () {
+                $(this).find('input:text:visible:first').focus();
+            })
+        });
+
+        function onChangeDateFrom() {
+            let from = $('#dateForm\\:dateFrom');
+            let to = $('#dateForm\\:dateTo');
+
+            from.blur();
+            to.focus();
+            from.datepicker('hide');
+        }
+    </script>
+
+    <c:if test="#{facesContext.getMessages('dateForm:dateTo').hasNext()
+            or facesContext.getMessages('dateForm:dateFrom').hasNext()}">
+        <script type="text/javascript">
+            $(window).on('load', function () {
+                $('#datesModal').modal('show');
+            });
+        </script>
+    </c:if>
+</div>

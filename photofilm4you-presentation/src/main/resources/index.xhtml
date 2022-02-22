@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="/WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+
+        <ui:include src="/WEB-INF/component/front/categories.xhtml"/>
+
+        <div class="home-banner px-4 py-4 hidden">
+            <div class="home-banner-content text-center">
+                <div class="home-banner-title my-3">
+                    T’ajudam a capturar els teus moments
+                </div>
+                <div class="home-banner-text">
+                    Tu poses l’escena i nosaltres l’equip. Amb la nostra àmplia selecció de productes trobaràs l’eina perfecta per
+                    a cada situació.
+                </div>
+                <h:link rendered="#{not auth.authenticated}"
+                        outcome="/registerCustomer"
+                        value="REGISTRA'T"
+                        styleClass="btn btn-primary green mt-5 large"/>
+            </div>
+        </div>
+        <div class="page-title mt-5 px-5 hidden">Els millors productes</div>
+
+        <ui:include src="/WEB-INF/component/front/products.xhtml">
+            <ui:param name="products" value="#{frontProductsBean.topProducts}"/>
+        </ui:include>
+
+        <div class="text-center mt-2">
+            <h:link outcome="/catalog/showCatalog" value="MOSTRA MÉS" styleClass="btn btn-primary white"/>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

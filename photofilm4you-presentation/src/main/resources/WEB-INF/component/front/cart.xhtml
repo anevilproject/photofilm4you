@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     class="modal right fade" id="shoppingCart" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+                    <span class="cart-title" id="myModalLabel2">El meu carret</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><i class="fas fa-times"/></span>
+                    </button>
+                </div>
+                <c:if test="#{cartBean.cartActive}">
+                    <div class="text-center py-4">
+                            <span class="date-display">
+                                <h:outputText value="#{cartBean.current.fromAsString}"/>
+                            </span>
+                        <span class="date-arrow">
+                            <i class="fas fa-long-arrow-alt-right"/>
+                        </span>
+                        <span class="date-display mr-3">
+                                <h:outputText value="#{cartBean.current.toAsString}"/>
+                            </span>
+                        <div class="text-muted cart-days">
+                            <h:outputText value="#{cartBean.cartDaysFormatted}"/> dies
+                        </div>
+                    </div>
+                </c:if>
+                <c:if test="#{cartBean.cartSize > 0}">
+                    <c:forEach var="item" items="#{cartBean.current.items}">
+                        <div class="cart-item">
+                            <h:graphicImage rendered="#{item.product.image != null}"
+                                            value="/image/#{item.product.image.id}"
+                                            alt="Product image"/>
+                            <h:graphicImage rendered="#{item.product.image == null}"
+                                            value="#{resource['images:no-image.png']}"
+                                            alt="Product image"/>
+                            <div class="cart-item-description">
+                                <div class="cart-item-name">
+                                    <h:link outcome="/catalog/showProduct" styleClass="card-link">
+                                        <f:param name="productId" value="#{item.product.id}"/>
+                                        <h:outputText value="#{item.product.name}"/>
+                                    </h:link>
+                                </div>
+                                <span class="stars-container stars-#{frontProductBean.resolveProductPercentage(item.product)}">
+                                        ★★★★★
+                                    </span>
+                                <div class="cart-item-price">
+                                        <span class="product-price">
+                                            <h:outputText value="#{item.dailyPriceFormatted}">
+                                                <f:convertNumber type="currency" locale="es_ES" currencySymbol=""/>
+                                            </h:outputText>
+                                        </span>
+                                    <span class="product-price-unit">€/dia</span>
+                                </div>
+                                <div class="cart-item-units">
+                                    <h:outputText value="#{item.units}"/> unitat/s
+                                </div>
+                            </div>
+                            <div class="cart-item-delete">
+                                <h:form>
+                                    <h:inputHidden value="#{cartBean.source}"/>
+                                    <h:commandLink action="#{cartBean.removeFromCart}">
+                                        <f:setPropertyActionListener target="#{cartBean.productId}"
+                                                                     value="#{item.product.id}"/>
+                                        <i class="fas fa-trash red"/>
+                                    </h:commandLink>
+                                </h:form>
+                            </div>
+                        </div>
+                    </c:forEach>
+                    <div class="cart-summary">
+                        <div class="cart-summary-text">
+                            Preu per dia
+                        </div>
+                        <div class="cart-summary-price product-price">
+                            <h:outputText value="#{cartBean.current.dailyPrice}">
+                                <f:convertNumber type="currency" locale="es_ES"/>
+                            </h:outputText>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
+                        <div class="cart-summary-text">
+                            Import total
+                        </div>
+                        <div class="cart-summary-price product-price">
+                            <h:outputText value="#{cartBean.current.totalPrice}">
+                                <f:convertNumber type="currency" locale="es_ES"/>
+                            </h:outputText>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h:form>
+                            <h:inputHidden value="#{rentBean.source}"/>
+                            <h:commandButton styleClass="btn btn-primary green full"
+                                             value="FINALITZA LA COMPRA"
+                                             action="#{rentBean.confirm}">
+                            </h:commandButton>
+                        </h:form>
+                    </div>
+                </c:if>
+                <c:if test="#{cartBean.cartSize == 0}">
+                    <div class="empty-cart">
+                        <div class="text-center mt-4">
+                            <img src="#{resource['images:empty_cart.png']}" alt="Empty cart"/>
+                        </div>
+                        <div class="text-center mt-4">
+                            No hi ha productes al carret
+                        </div>
+                    </div>
+                </c:if>
+            </div>
+        </div>
+    </div>
+</div>

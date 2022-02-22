@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div class="page-title mt-4">
+        <h:link outcome="#{back}" styleClass="back-link">
+            <i class="back-button fas fa-arrow-left"/>
+        </h:link>
+        <span><h:outputText value="#{backTitle}"/></span>
+    </div>
+    <div class="catalog-container mt-4">
+        <!-- Rent info -->
+        <div class="filters">
+            <div class="card rent-details">
+                <div class="card-body">
+                    <div class="cart-title">
+                        <h:outputText value="#{rent.id}"/>
+                    </div>
+                    <h:panelGroup rendered="#{rent.status == 'CANCELLED'}" styleClass="title" layout="block">
+                        Lloguer cancel·lat <i class="fas fa-times text-danger"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{rent.status == 'CONFIRMED'}" styleClass="title" layout="block">
+                        Lloguer confirmat <i class="fas fa-check text-success"/>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{rent.status == 'NOT_CONFIRMED'}" styleClass="title" layout="block">
+                        Lloguer pendent de pagament <i class="fas fa-clock"/>
+                    </h:panelGroup>
+                    <div>
+                        <small class="text-muted mt-3">
+                            <h:outputText value="#{rentBean.formatCreationDate(rent)}"/>
+                        </small>
+                    </div>
+                    <h:panelGroup rendered="#{rent.isCancelled()}" layout="block">
+                        <small class="text-muted mt-3">
+                            <h:outputText value="#{rentBean.formatCancellationDate(rent)}"/>
+                        </small>
+                    </h:panelGroup>
+                    <div class="mt-2">
+                        <span class="date-display">
+                            <h:outputText value="#{rentBean.formatDate(rent.from)}"/>
+                        </span>
+                        <span class="date-arrow">
+                            <i class="fas fa-long-arrow-alt-right"/>
+                        </span>
+                        <span class="date-display mr-3">
+                            <h:outputText value="#{rentBean.formatDate(rent.to)}"/>
+                        </span>
+                        <div class="text-muted text-center cart-days">
+                            <h:outputText value="#{rent.getDuration()}"/> dies
+                        </div>
+                    </div>
+                    <div class="date-display mt-4">
+                        Unitats assignades
+                    </div>
+                    <div class="filter-options">
+                        <ui:repeat value="#{rent.getItemsByProduct().entrySet()}" var="entry">
+                            <div class="card-title rent-product text-muted mt-3 font-weight-bold">
+                                <div>
+                                    <h:outputText value="#{entry.key.name}"/>
+                                </div>
+                                <div class="ml-2">
+                                    (<h:outputText value="#{entry.value.size()}"/>)
+                                </div>
+                            </div>
+                            <ui:repeat value="#{entry.value}" var="rentItem">
+                                <h:panelGroup rendered="#{auth.admin}" layout="block" styleClass="text-center mt-3">
+                                    <h:link outcome="/back/item/updateItem">
+                                        <f:param name="itemId" value="#{rentItem.id}"/>
+                                        <small class="text-muted">
+                                            Núm. sèrie <h:outputText value="#{rentItem.serialNumber}"/>
+                                        </small>
+                                    </h:link>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{auth.customer}" layout="block">
+                                    <small class="text-muted">
+                                        Núm. sèrie <h:outputText value="#{rentItem.serialNumber}"/>
+                                    </small>
+                                </h:panelGroup>
+                            </ui:repeat>
+                        </ui:repeat>
+                    </div>
+                    <div class="rent-price text-muted mt-3">
+                        Import total
+                        <span class="amount">
+                            <h:outputText value="#{rent.getTotalPrice()}">
+                                <f:convertNumber type="currency" locale="es_ES"/>
+                            </h:outputText>
+                        </span>
+                    </div>
+                    <h:panelGroup rendered="#{rent.isCancelled()}" layout="block">
+                        <div class="rent-price text-muted mt-3">
+                            Penalització
+                            <span class="amount">
+                                <h:outputText value="#{rent.cancellation.penalization}">
+                                    <f:convertNumber type="currency" locale="es_ES"/>
+                                </h:outputText>
+                            </span>
+                        </div>
+                        <h:panelGroup rendered="#{rent.cancellation.status == 'PENDING'}" layout="block"
+                                      styleClass="text-muted mt-3">
+                            <c:if test="#{auth.admin}">
+                                <a href="#" class="btn btn-primary mb-3" data-toggle="modal"
+                                   data-target="#refundModal">
+                                    COMPLETAR DEVOLUCIÓ
+                                </a>
+                            </c:if>
+                            Reserva pendent de devolució
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{rent.cancellation.status == 'PAID'}" layout="block"
+                                      styleClass="text-muted mt-3">
+                            Penalització pagada
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{auth.customer and rent.status == 'NOT_CONFIRMED'}" layout="block"
+                                  styleClass="text-center mt-3">
+                        <h:form>
+                            <small class="text-muted py-2">
+                                Aquesta reserva no està pagada i serà eliminada si no s'abona l'import total
+                            </small>
+                            <h:inputHidden value="#{rentBean.source}"/>
+                            <h:commandButton styleClass="btn btn-primary"
+                                             value="PAGA EL LLOGUER"
+                                             action="#{rentBean.requestPayment}">
+                                <f:setPropertyActionListener value="#{rent.id}" target="#{rentBean.rentId}"/>
+                            </h:commandButton>
+                        </h:form>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{rent.isCancellable()}" layout="block" styleClass="text-center mt-3">
+                        <a href="#" class="btn btn-primary red" data-toggle="modal" data-target="#cancelModal">
+                            CANCEL·LA EL LLOGUER
+                        </a>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display products -->
+        <div class="catalog-content rent-products">
+            <div class="date-display py-3 px-5 ml-3">
+                Productes Reservats
+            </div>
+
+            <ui:include src="/WEB-INF/component/front/products.xhtml">
+                <ui:param name="products" value="#{rent.getProducts()}"/>
+            </ui:include>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content dates-modal">
+                <h:form>
+                    <div class="modal-body px-4 pt-4">
+                        <h5 class="modal-title mb-3">Segur que vols cancel·lar aquest lloguer?</h5>
+                        <div class="mb-3 text-muted body-text">
+                            Es cancel·larà aquest lloguer i s'aplicarà la penalització corresponent segons la data de cancel·lació.
+                        </div>
+                        <div class="mb-3 text-muted body-text">
+                            La penalització és de
+                            <span class="product-price">
+                                <h:outputText value="#{rentBean.calculateCancelPenalty(rent)}">
+                                    <f:convertNumber type="currency" locale="es_ES"/>
+                                </h:outputText>
+                            </span>
+                        </div>
+                        <h:inputHidden value="#{rentBean.source}"/>
+                        <h:commandButton styleClass="btn btn-primary flat"
+                                         value="SÍ. VULL CANCEL·LAR"
+                                         action="#{rentBean.cancel}">
+                            <f:setPropertyActionListener value="#{rent.id}" target="#{rentBean.rentId}"/>
+                        </h:commandButton>
+                        <button type="button" class="btn btn-primary white flat" data-dismiss="modal">MILLOR NO</button>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+    <c:if test="#{auth.admin}">
+        <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content dates-modal">
+                    <h:form>
+                        <div class="modal-body px-4 pt-4">
+                            <h5 class="modal-title mb-3">Segur que vols marcar la devolució com a completada?</h5>
+                            <div class="mb-3 text-muted body-text">
+                                Aquesta acció no es pot desfer.
+                            </div>
+                            <h:inputHidden value="#{rentBean.source}"/>
+                            <h:commandButton styleClass="btn btn-primary flat"
+                                             value="ACCEPTA"
+                                             action="#{rentBean.refund}">
+                                <f:setPropertyActionListener value="#{rent.id}" target="#{rentBean.rentId}"/>
+                            </h:commandButton>
+                            <button type="button" class="btn btn-primary white flat" data-dismiss="modal">CANCEL·LA
+                            </button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </c:if>
+</div>

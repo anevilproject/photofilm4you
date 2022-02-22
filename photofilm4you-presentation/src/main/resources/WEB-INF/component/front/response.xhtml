@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+     xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     class="response mt-5">
+    <h:panelGroup layout="block" rendered="#{response.user.admin}">
+        <small class="publisher">
+            <h:outputText value="#{frontProductBean.formatReviewDate(response.created)}"/>
+            per
+            <h:outputText value="#{response.user.email}"/>
+            <span class="badge staff-badge ml-3">Administrador</span>
+        </small>
+    </h:panelGroup>
+    <h:panelGroup layout="block" rendered="#{not response.user.admin}">
+        <small class="publisher">
+            <h:outputText value="#{frontProductBean.formatReviewDate(response.created)}"/>
+            per
+            <h:outputText value="#{response.user.fullName}"/>
+        </small>
+    </h:panelGroup>
+    <div class="response-message mt-2">
+        <h:outputText value="#{response.message}"/>
+    </div>
+    <h:panelGroup layout="block"
+                  rendered="#{response.images != null and response.images.size() > 0}"
+                  styleClass="response-images">
+        <ui:repeat value="#{response.images}" var="image">
+            <span id="#{image.image.id}" class="cursor-pointer"
+                  onclick="displayImage('#{image.image.id}')">
+                <h:graphicImage value="/image/#{image.image.id}"/>
+            </span>
+        </ui:repeat>
+    </h:panelGroup>
+    <h:panelGroup layout="block"
+                  rendered="#{auth.admin or response.status != 'APPROVED'}"
+                  styleClass="response-actions">
+        <h:panelGroup rendered="#{auth.admin}"
+                      styleClass="cursor-pointer mr-4"
+                      onclick="$('#j_#{response.id}_status_form_container').toggle()">
+            <i class="fas fa-sync mr-1"/> Canvi d'estat
+        </h:panelGroup>
+        <h:panelGroup
+                rendered="#{response.user.email == auth.username and (auth.admin or response.status == 'PENDING')}"
+                styleClass="cursor-pointer mr-4"
+                onclick="$('#j_#{response.id}_img_form_container').toggle()">
+            <i class="fas fa-image mr-1"/> Afegeix una imatge
+        </h:panelGroup>
+        <h:panelGroup rendered="#{response.status == 'PENDING'}"
+                      styleClass="text-red">
+            <i class="fas fa-eye mr-1"/> Resposta pendent de revisió
+        </h:panelGroup>
+        <h:panelGroup rendered="#{response.status == 'REJECTED'}"
+                      styleClass="text-red">
+            <i class="fas fa-times mr-1"/> Resposta rebutjada
+        </h:panelGroup>
+        <h:panelGroup rendered="#{response.status == 'APPROVED'}"
+                      styleClass="text-green">
+            <i class="fas fa-check mr-1"/> Resposta aprovada
+        </h:panelGroup>
+    </h:panelGroup>
+    <h:panelGroup styleClass="response-image-form"
+                  style="display: #{facesContext.getMessages('j_'.concat(response.id).concat('_img_form:img_input')).hasNext() ? 'block' : 'none'}"
+                  id="j_#{response.id}_img_form_container"
+                  rendered="#{response.user.email == auth.username and (auth.admin or response.status == 'PENDING')}">
+        <h:form id="j_#{response.id}_img_form" p:enctype="multipart/form-data">
+            <div class="form-group mt-2">
+                <hr/>
+                <label class="font-weight-bold" for="img_input">
+                    Selecciona una imatge
+                </label>
+                <h:inputFile value="#{responseBean.file}"
+                             styleClass="form-control"
+                             size="1"
+                             required="true"
+                             requiredMessage="S'ha de seleccionar una imatge"
+                             p:accept=".jpg,.jpeg,.png" id="img_input"
+                             onchange="checkFileSize(this)"/>
+                <small class="form-text text-error">
+                    <h:message class="text-danger" for="img_input"/>
+                </small>
+            </div>
+            <div>
+                <h:commandButton value="Accepta"
+                                 type="submit"
+                                 styleClass="btn btn-primary"
+                                 action="#{responseBean.save}">
+                    <f:setPropertyActionListener value="#{response.id}"
+                                                 target="#{responseBean.id}"/>
+                </h:commandButton>
+                <button type="button"
+                        class="btn btn-primary white"
+                        onclick="$('#j_#{response.id}_img_form_container').toggle()">
+                    CANCEL·LA
+                </button>
+            </div>
+            <h:inputHidden value="#{responseBean.source}"/>
+        </h:form>
+    </h:panelGroup>
+    <h:panelGroup styleClass="response-status-form"
+                  style="display: none"
+                  id="j_#{response.id}_status_form_container"
+                  rendered="#{auth.admin}">
+        <h:form id="j_#{response.id}_status_form">
+            <div class="form-group mt-2">
+                <hr/>
+                <label class="font-weight-bold" for="j_#{response.id}_img_input">
+                    Selecciona un estat
+                </label>
+                <h:selectOneListbox value="#{responseBean.status}" class="form-control" size="1">
+                    <c:forEach items="#{responseBean.statusItems}" var="status">
+                        <f:selectItem itemValue="#{status}"/>
+                    </c:forEach>
+                </h:selectOneListbox>
+            </div>
+            <div>
+                <h:commandButton value="Accepta"
+                                 type="submit"
+                                 styleClass="btn btn-primary"
+                                 action="#{responseBean.changeStatus}">
+                    <f:setPropertyActionListener value="#{response.id}"
+                                                 target="#{responseBean.id}"/>
+                </h:commandButton>
+                <button type="button"
+                        class="btn btn-primary white"
+                        onclick="$('#j_#{response.id}_status_form_container').toggle()">
+                    CANCEL·LA
+                </button>
+            </div>
+            <h:inputHidden value="#{responseBean.source}"/>
+        </h:form>
+    </h:panelGroup>
+</div>

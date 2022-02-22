@@ -1,0 +1,44 @@
+MODIFICACIONES DEL DISSENY DE PARTIDA
+
+
+BBDD:
+- Creació d'índex en taules que no tinguen (String)
+- Camps Money -> BigDecimal
+- Altres camps complexes -> String
+- Afegits camps de data de creació en Comment, Question i Response per ordenar.
+
+VISTES:
+- Unificació de les vistes Add i Update de totes les classes.
+- Vista Delete innecesaria. Per eliminar es farà en la vista List.
+
+PROGRAMACIÓ:
+- Separació de l'aplicació en moduls: Integration, Business i Presentation.
+- Implementació de classes DAO (Data Access Object) per accedir a la base de dades.
+- Ús de Handler específics per no tenir classes enormes.
+- Autenticació i Autorització mitjançant JAAS (Java Authentification and Authorization Service) amb l’us dels rols ADMIN i CUSTOMER, per tant no són necessaris els mètodes login/logout a la capa de negoci de profile, ja que ho gestiona el container.
+- Limitar acces a la carpeta /back al rol ADMIN y la carpeta /customer al rol CUSTOMER.
+- Creació d'una memoria caché que controli la disponibilitat de productes i utilitza events disparats a la capa de persistència per mantenir-se actualitzada. Les cachés utilitzades són locals i necessitarien qualque mecanisme per mantenir-se sincronitzades en cas de voler desplegar aquesta aplicació en mode distribuit (més d'un node), com per exemple Kafka o RabbitMQ per sincronitzar events.
+- Creació d'una caché per indexar els productes per categoria per tal d'agilitzar les consultes dels productes que pertanyen a una categoria. Aquesta caché també permet mantenir una herència de productes a les categorias, de tal forma que un producte es troba a la categoria que te assignada i també a les categories pares fins a arribar a l'arrel.
+- En comptes d'implementar un mètode per recuperar els items disponibles d'un producte es recupera el nombre d'unitats i és el backend el que assigna automàticament els items a l'hora de confirmar
+- Ús de variables d’entorn (env-entries) per definir el càlcul de la penalització de la cancel·lació d’alquilers.
+- S'afegeix un mètode a la interfície IMediaBusiness listAllQuestionResponses(String questionId) que retorna totes les respostes entrades per a una pregunta donada i segons el rol del caller mostrarà totes les respoestes (admin) o només les aprovades i les pròpies (customer).
+- Es canvia la signatura del mètode acceptOrRejectResponse(Integer responseId, boolean isAccepted) per un mètode que gestioni el canvi d'estat de la resposta changeResponseStatus(String responseId, ResponseStatus status)
+- S'ha creat un job per lliberar reserves sense pagar pasats 30 minuts desde la seva creació. D'aquesta manera s'allibera stock bloquejat quan una reserva no s'arriba a pagar i no és necessari que ho faci un Admin manualment (tot i que també ho pot fer).
+- S'ha afegit un mètode a RentFacade per mostrar el recàrrec de cancel·lar una reserva abans de cancel·lar
+- S'ha canviat la signatura del mètode addImageToResponse(String responseId, UploadedFile image) throws ImageException de MediaFacade per facilitar el tractament d'imatges pujades des del portal. UploadedFile és una classe que recull el tipus de fitxer, el nom, i el contingut per a ser tractat després en qualsevol punt que es necessiti pujar una imatge.
+- En general s'han canviat les signatures per persistir dades per utilitzar objectes en lloc de passar molts de paràmetres, ja que el codi queda més net i és més mantenible.
+- S'ha eliminat el mail com a paràmetre dels mètodes de negoci que l'utilitzaven per cercar dades de l'usuari, i en comptes d'això es treu el correu del contexte de seguretat d'EJB ja que és més fiable.
+- Implementació d'un carret de la compra associat a la sessió HTTP de l'usuari per tal de no crear lloguers sense confirmar i no bloquejar stock mentre un customer fa la compra. S'han afegit els mètodes corresponents per gestionar el carret al RentFacade.
+- El sistema de pagament de prova implementat no utilitza el NIF.
+
+ALTRES:
+- Utilitzar el català com idioma de l’aplicació.
+- No es poden tenir més de tres nivells de categories.
+- S'ha afegit la possibilitat d'adjuntar una imatge als productes.
+- Limitar els alquilers a 1 any vista.
+- No es poden cancel·lar reserves a passat. La data d'inici ha de ser com a màxim avui per poder cancel·lar.
+- Els customers no poden afegir imatges a respostes que ja han estat aprovades/rebutjades
+- S'han unificat les vistes del fòrum en "veure preguntes" i "veure respostes" per una qüestió d'UX/UI
+- No es poden eliminar del tot les enitats marca, model, producte i item degut a la seva relació directa amb les reserves, per tant el que hem fet és donar la possibilitat de marcar aquestes entitats com eliminades amb una data d'eliminació i donar l'opció de reactivar-les quan sigui necessari eliminant la data informada.
+- La cerca de productes mostra sempre tots els productes actius i les seves unitats disponibles quan s'informen dates, ja que no és el mateix no tenir unitats disponibles que no tenir el producte, d'aquesta manera el customer pot veure que el producte existeix a la tenda, però que no hi ha unitats disponibles i pot provar amb altres dates. Creiem que és més clar que no pas no mostrar el producte. De totes maneres si la gent de negoci prefereix no mostrar els productes és molt fàcil de canviar, bastaria amb no pintar els productes que tenen menys d'una unitat.
+- Tot i que les puntuacions dels productes són de 0 a 10 es presenten en una escala de 0 a 5 estrelles als customers i es permeten puntuacions amb mitja estrella per simplicitat.

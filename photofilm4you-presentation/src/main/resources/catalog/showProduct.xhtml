@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core">
+<f:metadata>
+    <f:viewParam name="productId" value="#{frontProductBean.productId}"/>
+</f:metadata>
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+
+        <!-- Categories -->
+        <ui:include src="/WEB-INF/component/front/categories.xhtml"/>
+
+        <div class="page-title">
+            <h:link outcome="/catalog/showCatalog" styleClass="back-link">
+                <f:param name="categoryId" value="#{frontProductBean.product.category.id}"/>
+                <i class="back-button fas fa-arrow-left"/>
+            </h:link>
+            <span>#{frontCategoriesBean.resolvePath(frontProductBean.product.category.id)}</span>
+        </div>
+
+        <div class="product-page px-2 px-md-5 py-3">
+            <div class="product-details">
+                <div class="product-image-container">
+                    <h:graphicImage rendered="#{frontProductBean.product.image != null}"
+                                    styleClass="frontProduct.product-image"
+                                    value="/image/#{frontProductBean.product.image.id}"
+                                    alt="Product image"/>
+                    <h:graphicImage rendered="#{frontProductBean.product.image == null}"
+                                    styleClass="product-image"
+                                    value="#{resource['images:no-image.png']}"
+                                    alt="Product image"/>
+                </div>
+                <div class="product-data">
+                    <div class="product-description">
+                        <h5 class="product-name">#{frontProductBean.product.name}</h5>
+                        <div class="product-brand">
+                            #{frontProductBean.product.model.brand.name} • #{frontProductBean.product.model.name}
+                        </div>
+                        <h6 class="product-text">
+                            #{frontProductBean.product.description}
+                        </h6>
+                        <ui:include src="/WEB-INF/component/front/productUnits.xhtml">
+                            <ui:param name="product" value="#{frontProductBean.product}"/>
+                        </ui:include>
+                    </div>
+                    <div class="card ml-lg-5 ml-3">
+                        <div class="card-body">
+                            <div class="card-price">
+                                <div class="card-price-name">Preu per dia:</div>
+                                <div class="card-price-value">
+                                    <h:outputText value="#{frontProductBean.product.dailyPrice}">
+                                        <f:convertNumber type="currency" locale="es_ES" currencySymbol="€"/>
+                                    </h:outputText>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="card-price">
+                                <div class="card-price-name">Dies lloguer:</div>
+                                <div class="card-price-value">#{cartBean.cartDaysFormatted}</div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="card-price">
+                                <div class="card-price-name">Total:</div>
+                                <div class="card-price-value">
+                                    <c:if test="#{cartBean.cartActive}">
+                                        <h:outputText
+                                                value="#{cartBean.calculateProductPrice(frontProductBean.product)}">
+                                            <f:convertNumber type="currency" locale="es_ES" currencySymbol="€"/>
+                                        </h:outputText>
+                                    </c:if>
+                                    <c:if test="#{not cartBean.cartActive}">
+                                        -
+                                    </c:if>
+                                </div>
+                            </div>
+                            <c:if test="#{not auth.authenticated}">
+                                <a href="#" class="btn btn-primary green full mt-4 disabled">AFEGEIX AL CARRET</a>
+                                <div class="mt-2 text-muted text-center">
+                                    Fes
+                                    <h:link outcome="/login" value="login">
+                                        <f:param name="referer" value="#{auth.referer}"/>
+                                    </h:link>
+                                    per afegir al carret.
+                                </div>
+                            </c:if>
+                            <c:if test="#{auth.customer}">
+                                <c:if test="#{cartBean.cartActive and availabilityBean.canAddUnits(frontProductBean.product)}">
+                                    <h:form id="addToCart">
+                                        <div class="dropdown-divider"></div>
+                                        <div class="card-price mt-3">
+                                            <div class="card-price-name">
+                                                <label for="select">Unitats</label>
+                                            </div>
+                                            <div class="card-price-value">
+                                                <h:selectOneMenu value="#{cartBean.units}" styleClass="form-control">
+                                                    <c:forEach var="i"
+                                                               items="#{availabilityBean.getAddToCartUnits(frontProductBean.product)}">
+                                                        <f:selectItem itemValue="#{i}" itemLabel="#{i}"/>
+                                                    </c:forEach>
+                                                </h:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="w-100">
+                                            <h:inputHidden value="#{cartBean.source}"/>
+                                            <h:commandButton styleClass="btn btn-primary green full mt-4"
+                                                             value="AFEGEIX AL CARRET"
+                                                             action="#{cartBean.addToCart}">
+                                                <f:setPropertyActionListener target="#{cartBean.productId}"
+                                                                             value="#{frontProductBean.product.id}"/>
+                                            </h:commandButton>
+                                        </div>
+                                    </h:form>
+                                </c:if>
+                                <c:if test="#{not cartBean.cartActive or not availabilityBean.canAddUnits(frontProductBean.product)}">
+                                    <div class="dropdown-divider"></div>
+                                    <div class="card-price mt-3">
+                                        <div class="card-price-name">
+                                            <label for="select">Unitats</label>
+                                        </div>
+                                        <div class="card-price-value">
+                                            <select class="form-control" id="select">
+                                                <option>0</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <a href="#" class="btn btn-primary green full mt-4 disabled">AFEGEIX AL CARRET</a>
+                                </c:if>
+                                <div class="mt-2">
+                                    <ui:include src="/WEB-INF/component/front/datesForm.xhtml"/>
+                                </div>
+                            </c:if>
+                            <c:if test="#{auth.admin}">
+                                <div class="dropdown-divider"></div>
+                                <h:link outcome="/back/product/updateProduct"
+                                        styleClass="btn btn-primary full mt-4"
+                                        value="EDITA">
+                                    <f:param name="productId" value="#{frontProductBean.product.id}"/>
+                                </h:link>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="product-reviews mt-5">
+                <div class="product-reviews-summary">
+                    <div class="title">
+                        Opinions dels usuaris
+                    </div>
+                    <div class="stars">
+                        <span class="stars-container stars-#{frontProductBean.resolveProductPercentage(frontProductBean.product)}">★★★★★</span>
+                        <h:outputText rendered="#{frontProductBean.product.rating != null}"
+                                      value="#{frontProductBean.product.rating / 2}">
+                            <f:convertNumber type="currency" locale="es_ES" currencySymbol="" maxFractionDigits="1"/>
+                        </h:outputText>
+                        <h:outputText rendered="#{frontProductBean.product.rating == null}" value="0,0"/>
+                        / 5
+                    </div>
+                    <div class="subtitle">
+                        <h:outputText rendered="#{empty frontProductBean.ratings}" value="Sense "/>
+                        <h:outputText rendered="#{not empty frontProductBean.ratings}"
+                                      value="#{frontProductBean.ratings.size()} "/>
+                        <h:outputText rendered="#{frontProductBean.ratings.size() == 1}" value="opinió"/>
+                        <h:outputText rendered="#{frontProductBean.ratings.size() != 1}" value="opinions"/>
+                    </div>
+                    <c:if test="#{auth.customer}">
+                        <a href="#" class="btn btn-primary white" data-toggle="modal" data-target="#rateModal">
+                            ESCRIU UNA VALORACIÓ
+                        </a>
+                    </c:if>
+                </div>
+                <div class="user-reviews mt-1">
+                    <c:forEach items="#{frontProductBean.ratings}" var="rating" varStatus="varStatus">
+                        <div class="user-review" data-seq="#{varStatus.index}">
+                            <div class="info">
+                                <i class="fas fa-user-circle"/>
+                                <span class="ml-3">#{rating.customer.fullName}</span>
+                            </div>
+                            <span class="stars-container stars-#{frontProductBean.resolveRatingPercentage(rating)}">★★★★★</span>
+                            <div class="review-text">
+                                <h:outputText rendered="#{not empty rating.comment}" value="#{rating.comment}"/>
+                            </div>
+                            <div class="review-date">#{frontProductBean.formatReviewDate(rating.created)}</div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+        </div>
+        <c:if test="#{auth.customer}">
+            <div class="modal fade" id="rateModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content dates-modal">
+                        <h:form id="rateForm">
+                            <div class="modal-body px-4 pt-4">
+                                <h5 class="modal-title">Com valores aquest producte?</h5>
+                                <fieldset class="rate-widget">
+                                    <c:forEach var="i" begin="1" end="10" step="1">
+                                        <c:set var="decr" value="${11-i}"/>
+                                        <input type="radio" id="star#{decr}" name="rating" value="#{decr}"
+                                               onchange="onRate(this)"/>
+                                        <label class="#{decr % 2 == 0 ? 'full' : 'half'}" for="star#{decr}"/>
+                                    </c:forEach>
+                                </fieldset>
+                                <small id="rateMessage" class="form-text text-error">
+                                    <h:message class="text-danger" for="rating"/>
+                                </small>
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold" for="comment">
+                                        Descriu la teva experiència (Opcional)
+                                    </label>
+                                    <h:inputTextarea value="#{frontProductBean.comment}" rows="3"
+                                                     class="form-control" id="comment"/>
+                                    <small id="rateCommentMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="comment"/>
+                                    </small>
+                                </div>
+                                <h:inputHidden value="#{frontProductBean.source}"/>
+                                <h:inputHidden id="rating" value="#{frontProductBean.rating}"/>
+                                <h:commandButton styleClass="btn btn-primary flat"
+                                                 value="Accepta"
+                                                 action="#{frontProductBean.rate}"/>
+                                <button type="button" class="btn btn-primary white flat" data-dismiss="modal">CANCEL·LA
+                                </button>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+            <script type="application/javascript">
+                function onRate(input) {
+                    document.getElementById('rateForm\:rating').value = input.value;
+                }
+            </script>
+        </c:if>
+        <c:if test="#{facesContext.getMessages('rateForm:rating').hasNext()
+            or facesContext.getMessages('rateForm:comment').hasNext()}">
+            <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#rateModal').modal('show');
+                });
+            </script>
+        </c:if>
+    </ui:define>
+</ui:composition>
+</html>

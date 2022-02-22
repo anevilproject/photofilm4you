@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <!-- LLISTAT de models. ELIMINAR model. -->
+        <section class="mb-5">
+            <div class="create-item">
+                <span><h:link class="btn btn-primary white full" outcome="updateModel"><i class="fas fa-plus"></i> Crear model</h:link></span>
+            </div>
+            <div class="card card-cascade narrower">
+                <!--Card header-->
+                <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                    <h6>Llistat de models</h6>
+                </div>
+                <!--/Card header-->
+
+                <!--Card content-->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <h:dataTable value="#{modelBean.allItems}" var="item" rowClasses="#{modelBean.rowClass}"
+                                     styleClass="table text-nowrap nomargin-bottom"
+                                     width="100%"
+                                     binding="#{table}">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="#"/>
+                                </f:facet>
+                                <h:outputText value="#{table.rowIndex + 1}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="Model"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText styleClass="table-header" value="Marca"/>
+                                </f:facet>
+                                <h:outputText value="#{item.brand.name}"/>
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <h:link outcome="updateModel" rendered="#{item.deleted==null}">
+                                    <f:param name="modelId" value="#{item.id}"/>
+                                    <i class="fas fa-pen"></i>
+                                </h:link>
+
+                            </h:column>
+                            <h:column headerClass="colIcon">
+                                <h:panelGroup rendered="#{item.deleted==null}">
+                                    <i class="fas fa-trash-alt" data-toggle="modal" data-target="#ModelDeleteModal"
+                                       onclick="$('#ModelDelete\\:deleteModelId').val('#{item.id}')"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{item.deleted!=null}">
+                                    <i class="fas fa-history" data-toggle="modal" data-target="#ModelReactivateModal"
+                                       onclick="$('#ModelReactivate\\:reactivateModelId').val('#{item.id}')"/>
+                                </h:panelGroup>
+                            </h:column>
+                        </h:dataTable>
+                        <hr class="my-0"/>
+                    </div>
+                </div>
+                <!--/.Card content-->
+            </div>
+            <!--/.Card-->
+        </section>
+
+        <h:form id="ModelDelete">
+            <!-- Modal -->
+            <div class="modal fade" id="ModelDeleteModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Eliminar model ?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Estàs segur que vols eliminar aquest model? Tots les productes associats a aquest model també es marcaran com eliminats i no apareixeran al front.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary flat white"
+                                    data-dismiss="modal">CANCEL·LA
+                            </button>
+                            <h:commandButton type="submit" value="ELIMINA" class="btn btn-primary flat"
+                                             action="#{modelBean.delete}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:inputHidden value="#{modelBean.source}"/>
+            <h:inputHidden value="#{modelBean.id}" id="deleteModelId"></h:inputHidden>
+        </h:form>
+
+        <h:form id="ModelReactivate">
+            <!-- Modal -->
+            <div class="modal fade" id="ModelReactivateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content eliminar">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Reactivar model?</h5>
+                            <button type="button" class="close" data-dismiss="modal">
+                                <i class="fas fa-times"/>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>La reactivació del model no reactiva la resta d'elements associats històricament a aquest.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <h:column>
+                                <button type="button" class="btn btn-primary flat white"
+                                        data-dismiss="modal">CANCEL·LA
+                                </button>
+                            </h:column>
+                            <h:column><h:commandButton type="submit" value="REACTIVA" class="btn btn-primary flat"
+                                                       action="#{modelBean.reactivate()}"/>
+                            </h:column>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h:inputHidden value="#{modelBean.source}"/>
+            <h:inputHidden value="#{modelBean.id}" id="reactivateModelId"></h:inputHidden>
+        </h:form>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<f:metadata>
+    <f:viewParam name="modelId" value="#{modelBean.id}"/>
+</f:metadata>
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <div class="card card-cascade narrower mb-5">
+            <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                <!-- AFEGIR o MODIFICAR un model -->
+                <h6>
+                    <h:outputText rendered="#{modelBean.item.id==null}" value="Crear model"/>
+                    <h:outputText rendered="#{modelBean.item.id!=null}"
+                                  value="Modificar model: #{modelBean.item.name}"/>
+                </h6>
+            </div>
+
+            <h:form role="form" class="form-inline">
+                <div class="formDiv">
+
+                    <div><label for="modelName">Nom</label></div>
+                    <div>
+                        <h:inputText value="#{modelBean.item.name}" type="text" style="width:100%;"
+                                     class="form-control" id="modelName" maxlength="50"
+                                     p:placeholder="Introdueix un nom"/>
+                        <small class="form-text text-error">
+                            <h:message class="text-danger" for="modelName"/>
+                        </small>
+                    </div>
+
+                    <div><label for="modelBrandId">Marca</label></div>
+                    <div>
+                        <h:selectOneListbox
+                                value="#{modelBean.item.brand}"
+                                style="width:100%;" size="1"
+                                class="browser-default custom-select" id="modelBrandId">
+                            <f:selectItems value="#{modelBean.brandSelectItems}"/>
+                        </h:selectOneListbox>
+                    </div>
+
+                    <div class="formSubmit">
+                        <h:commandButton value="#{modelBean.item.id==null?'Accepta':'Modifica'}"
+                                         type="submit"
+                                         styleClass="btn btn-primary btn-form blue"
+                                         action="#{modelBean.save()}"/>
+                        <h:button value="Cancel·la"
+                                  styleClass="btn btn-primary btn-form white"
+                                  outcome="listModels.xhtml"/>
+                    </div>
+
+                </div>
+                <h:inputHidden value="#{modelBean.id}"/>
+                <h:inputHidden value="#{modelBean.source}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

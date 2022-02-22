@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:f="http://java.sun.com/jsf/core">
+
+<f:metadata>
+    <f:event type="preRenderView" listener="#{auth.redirectByRole}"/>
+</f:metadata>
+
+<ui:composition template="WEB-INF/template/frontLayout.xhtml">
+    <ui:param name="hideFooter" value="#{true}"/>
+    <ui:define name="content">
+        <div class="login-container register-container">
+            <!-- REGISTRAR un customer -->
+            <div class="login-form register-form">
+                <h5 class="mb-4 title text-center">Registrar-se</h5>
+                <span class="mb-4 subtitle text-center">Introdueix les teves dades</span>
+
+                <h:form id="registerCustomerForm" role="form">
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-user"/></div>
+                            </div>
+                            <h:inputText value="#{registerCustomer.customer.name}" type="text"
+                                         class="form-control" id="name" maxlength="50"
+                                         p:placeholder="Introdueix el nom" onchange="onNameChanged(this)">
+                            </h:inputText>
+                        </div>
+                        <small id="nameMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="name"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-user"/></div>
+                            </div>
+                            <h:inputText value="#{registerCustomer.customer.surname}" type="text"
+                                         class="form-control" id="surname" maxlength="50"
+                                         p:placeholder="Introdueix els cognoms" onchange="onNameChanged(this)">
+                            </h:inputText>
+                        </div>
+                        <small id="surnameMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="surname"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-user"/></div>
+                            </div>
+                            <h:inputText value="#{registerCustomer.customer.nif}" type="text"
+                                         class="form-control" id="nif" maxlength="50"
+                                         p:placeholder="Introdueix el nif" onchange="onNifChanged(this)">
+                            </h:inputText>
+                        </div>
+                        <small id="nifMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="nif"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-at"/></div>
+                            </div>
+                            <h:inputText type="text" value="#{registerCustomer.customer.email}"
+                                         class="form-control" id="email" maxlength="50"
+                                         p:placeholder="Introdueix un email">
+                            </h:inputText>
+                        </div>
+                        <small id="emailMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="email"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-phone"/></div>
+                            </div>
+                            <h:inputText value="#{registerCustomer.customer.phone}" type="text"
+                                         class="form-control" id="phone" maxlength="25"
+                                         p:placeholder="Introdueix un telèfon" onchange="onPhoneChanged(this)">
+                            </h:inputText>
+                        </div>
+                        <small id="phoneMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="phone"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-map-marker-alt"/></div>
+                            </div>
+                            <h:inputText value="#{registerCustomer.customer.address}" type="text"
+                                         class="form-control" id="address" maxlength="100"
+                                         p:placeholder="Introdueix una adreça">
+                            </h:inputText>
+                        </div>
+                        <small id="addressMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="address"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-lock"/></div>
+                            </div>
+                            <h:inputSecret value="#{registerCustomer.customer.password}" class="form-control"
+                                           id="password" p:placeholder="Introdueix una contrasenya"/>
+                        </div>
+                        <small id="passwordMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="password"/>
+                        </small>
+                    </div>
+                    <div class="form-outline mb-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text"><i class="fas fa-lock"/></div>
+                            </div>
+                            <h:inputSecret value="#{registerCustomer.userPasswordRepeat}"
+                                           class="form-control" id="userPasswordRepeat"
+                                           p:placeholder="Repeteix la contrasenya"/>
+                        </div>
+                        <small id="userPasswordRepeatMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="userPasswordRepeat"/>
+                        </small>
+                    </div>
+                    <div class="login-btn mb-4">
+                        <h:commandButton value="Registrar" type="submit" class="btn btn-primary mt-4"
+                                         action="#{registerCustomer.save()}"/>
+                    </div>
+                </h:form>
+            </div>
+            <div class="login-background register-background"></div>
+        </div>
+        <script>
+            //<![CDATA[
+            function onNifChanged(field) {
+                field.value = field.value.toUpperCase().trim();
+            }
+
+            function onPhoneChanged(field) {
+                field.value = field.value.replaceAll(' ', '').trim();
+            }
+
+            function onNameChanged(field) {
+                let value = field.value.trim();
+
+                if (value.length > 0) {
+                    if (value.length === 1) {
+                        field.value = value.toUpperCase();
+                    } else {
+                        field.value = value[0].toUpperCase() + value.slice(1);
+                    }
+                }
+            }
+
+            //]]>
+        </script>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+<ui:composition>
+
+    <h:form>
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-sm px-4 py-2">
+            <!-- SideNav slide-out button -->
+            <div class="float-left d-lg-none">
+                <a href="#" data-activates="slide-out" class="button-collapse">
+                    <i class="fa fa-bars"/>
+                </a>
+            </div>
+
+            <h:link outcome="/index.xhtml" styleClass="navbar-brand">
+                <img src="#{resource['images:logo.svg']}" alt="Brand logo"/>
+            </h:link>
+            <div class="navbar-nav ml-auto">
+                <h:link outcome="/catalog/showCatalog" value="Catàleg" styleClass="nav-item nav-link"/>
+                <h:link outcome="/forum/listQuestions" value="Fòrum" styleClass="nav-item nav-link"/>
+            </div>
+            <ui:include src="/WEB-INF/component/userOptions.xhtml"/>
+        </nav>
+        <!--/.Navbar-->
+
+        <!-- Sidebar navigation -->
+        <div id="slide-out" class="side-nav fixed">
+            <ul class="custom-scrollbar">
+                <!-- Side navigation links -->
+                <li>
+                    <ul class="collapsible collapsible-accordion">
+                        <li>
+                            <h:link outcome="/back/panelAdmin" value="Panel de control" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/category/listCategories" value="Categories"
+                                    styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/brand/listBrands" value="Marques" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/model/listModels" value="Models" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/product/listProducts" value="Productes" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/item/listItems" value="Items" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/rent/listRents" value="Lloguers" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/userList" value="Usuaris" styleClass="waves-effect"/>
+                        </li>
+                        <li>
+                            <h:link outcome="/back/listResponsesToAccept" value="Respostes per acceptar"
+                                    styleClass="waves-effect"/>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </h:form>
+    <script>
+        $(document).ready(function () {
+            // SideNav Button Initialization
+            $(".button-collapse").sideNav();
+            // SideNav Scrollbar Initialization
+            var sideNavScrollbar = document.querySelector('.custom-scrollbar');
+            new PerfectScrollbar(sideNavScrollbar);
+        })
+    </script>
+</ui:composition>
+</html>

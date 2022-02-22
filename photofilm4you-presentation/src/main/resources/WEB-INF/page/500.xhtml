@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+
+        <div class="error-container">
+            <i class="fa-6x fa-frown far mt-5"/>
+            <div class="error-message font-weight-bold my-5">QUALQUE COSA NO HA ANAT BÉ.</div>
+            <div class="text-center">
+                <h:link outcome="/index" value="TORNA A L'INICI" styleClass="btn btn-primary"/>
+            </div>
+            <c:if test="#{errorBean.exceptionThrown}">
+                <div class="text-center mt-5 text-muted">
+                    <span class="error-toggle cursor-pointer" onclick="toggleError()">
+                        Si entens d'aquestes coses pots fer click aquí per veure l'error
+                        <i class="fas fa-caret-right"/>
+                        <i class="fas fa-caret-down" style="display: none"/>
+                    </span>
+                </div>
+                <div class="error-detail mt-3" style="display: none">
+                    <hr/>
+                    <pre><h:outputText value="#{errorBean.stackTrace}"/></pre>
+                </div>
+            </c:if>
+        </div>
+        <script>
+            function toggleError() {
+                $('.error-detail').toggle();
+                $('.fa-caret-right').toggle();
+                $('.fa-caret-down').toggle();
+            }
+        </script>
+    </ui:define>
+</ui:composition>
+</html>

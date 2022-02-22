@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+
+        <div class="container">
+            <div class="forum-title">
+                Fòrum de preguntes
+            </div>
+
+            <c:if test="#{not auth.authenticated}">
+                <div class="mt-2 text-muted text-center">
+                    Tens una pregunta? Fes
+                    <h:link outcome="/login" value="login">
+                        <f:param name="referer" value="#{auth.referer}"/>
+                    </h:link>
+                    per publicar els teus dubtes.
+                </div>
+            </c:if>
+
+            <c:forEach items="#{listQuestionsBean.questions}" var="item" varStatus="varStatus">
+                <h:link outcome="showQuestion" styleClass="card-link">
+                    <f:param name="questionId" value="#{item.question.id}"/>
+                    <div class="card w-100 hidden" data-seq="#{varStatus.index}">
+                        <div class="card-body forum-question">
+                            <div class="question-responses px-4 text-center #{item.responses > 0 ? 'answered' : ''}">
+                                <div class="question-responses-number">
+                                    #{item.responses}
+                                </div>
+                                <div>
+                                    Respostes
+                                </div>
+                            </div>
+                            <div class="flex-1 px-5 question-text">
+                                <div class="title">
+                                    #{item.question.title}
+                                </div>
+                                <div class="description">
+                                    #{item.question.message}
+                                </div>
+                                <div class="publisher">
+                                    #{frontProductBean.formatReviewDate(item.question.created)} per #{item.question.customer.fullName}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:link>
+            </c:forEach>
+        </div>
+        <c:if test="#{auth.customer}">
+            <a href="#"
+               class="btn btn-primary btn-floating btn-float-right btn-lg p-0"
+               data-toggle="modal"
+               data-target="#questionModal">
+                <i class="fas fa-paper-plane"/>
+            </a>
+        </c:if>
+
+        <div class="modal fade" id="questionModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <h:form id="questionForm">
+                        <div class="modal-body px-4 pt-4">
+                            <h5 class="modal-title mb-3">Envia la teva pregunta</h5>
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold" for="questionTitle">
+                                    Títol
+                                </label>
+                                <h:inputText value="#{showQuestionBean.question.title}"
+                                             type="text"
+                                             class="form-control"
+                                             id="questionTitle"
+                                             p:placeholder="Títol de la pregunta..."/>
+                                <small class="form-text text-error">
+                                    <h:message class="text-danger" for="questionTitle"/>
+                                </small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="font-weight-bold" for="questionMessage">
+                                    Descripció
+                                </label>
+                                <h:inputTextarea value="#{showQuestionBean.question.message}" rows="6"
+                                                 class="form-control" id="questionMessage"
+                                                 p:placeholder="Descriu en detall el teu dubte..."/>
+                                <small class="form-text text-error">
+                                    <h:message class="text-danger" for="questionMessage"/>
+                                </small>
+                            </div>
+                            <h:inputHidden value="#{showQuestionBean.source}"/>
+                            <h:commandButton styleClass="btn btn-primary flat"
+                                             value="ENVIA"
+                                             action="#{showQuestionBean.save}"/>
+                            <button type="button" class="btn btn-primary white flat" data-dismiss="modal">
+                                CANCEL·LA
+                            </button>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        <c:if test="#{facesContext.getMessages('questionForm:questionTitle').hasNext()
+            or facesContext.getMessages('questionForm:questionMessage').hasNext()}">
+            <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#questionModal').modal('show');
+                });
+            </script>
+        </c:if>
+    </ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:h="http://java.sun.com/jsf/html"
+     class="snackbar-container">
+
+    <h:messages styleClass="snackbar error" id="globalError" for="globalError"/>
+    <h:messages styleClass="snackbar success" id="globalSuccess" for="globalSuccess"/>
+
+    <script>
+        //<![CDATA[
+        $(window).on('load', function () {
+            showSnackbar();
+        });
+
+        let snackTimer;
+
+        function showSnackbar() {
+            let container = $('.snackbar-container');
+            container.addClass('show');
+
+            snackTimer = setTimeout(function () {
+                container.removeClass('show');
+            }, 5000);
+        }
+
+        function showSnackbarError(message) {
+            let snack = $('.snackbar-container');
+            snack.html('<ul class="snackbar error">' + message + '<li></li></ul>');
+
+            if (snackTimer !== undefined) {
+                clearTimeout(snackTimer);
+            }
+            showSnackbar();
+        }
+
+        //]]>
+    </script>
+
+</div>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:ui="http://java.sun.com/jsf/facelets"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+     class="product-list px-5 py-2">
+    <ui:repeat value="#{products}" var="product" varStatus="varStatus">
+        <h:link outcome="/catalog/showProduct" styleClass="card-link hidden" p:data-seq="#{varStatus.index}">
+            <f:param name="productId" value="#{product.id}"/>
+            <div class="card">
+                <div class="card-img-top">
+                    <h:graphicImage rendered="#{product.image != null}"
+                                    value="/image/#{product.image.id}"
+                                    alt="Product image"/>
+                    <h:graphicImage rendered="#{product.image == null}"
+                                    value="#{resource['images:no-image.png']}"
+                                    alt="Product image"/>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">#{product.name}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        #{product.description}
+                    </h6>
+                    <div class="product-info">
+                        <div class="product-rate-container">
+                            <span class="stars-container stars-#{frontProductBean.resolveProductPercentage(product)}">★★★★★</span>
+                        </div>
+                        <div class="product-price-container">
+                            <span class="product-price">
+                                <h:outputText value="#{product.dailyPrice}">
+                                    <f:convertNumber type="currency" locale="es_ES" currencySymbol=""/>
+                                </h:outputText>
+                            </span>
+                            <span class="product-price-unit">€/dia</span>
+                        </div>
+                    </div>
+                    <h:panelGroup rendered="#{showUnits}" layout="block">
+                        <ui:include src="/WEB-INF/component/front/productUnits.xhtml">
+                            <ui:param name="product" value="#{product}"/>
+                        </ui:include>
+                    </h:panelGroup>
+                </div>
+            </div>
+        </h:link>
+    </ui:repeat>
+</div>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+<f:metadata>
+    <f:viewParam name="rentId" value="#{rentBean.rentId}"/>
+</f:metadata>
+
+<ui:composition template="../../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <ui:include src="/WEB-INF/component/rent.xhtml">
+            <ui:param name="rent" value="#{rentBean.rent}"/>
+            <ui:param name="back" value="/customer/rent/myRents"/>
+            <ui:param name="backTitle" value="Els meus lloguers"/>
+        </ui:include>
+    </ui:define>
+</ui:composition>
+</html>

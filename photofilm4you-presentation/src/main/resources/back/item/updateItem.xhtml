@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+    <f:viewParam name="itemId" value="#{itemBean.id}"/>
+</f:metadata>
+
+<ui:composition template="../../WEB-INF/template/headerAdmin.xhtml">
+    <ui:define name="content">
+        <div class="card card-cascade narrower mb-5">
+            <div class="view view-cascade py-3 gradient-card-header bkgd-grey-color">
+                <!-- AFEGIR o MODIFICAR un item-->
+                <h6>
+                    <h:outputText rendered="#{itemBean.item.id==null}" value="Crear item"/>
+                    <h:outputText rendered="#{itemBean.item.id!=null}"
+                                  value="Modificar item: #{itemBean.item.serialNumber}"/>
+                </h6>
+            </div>
+            <h:form id="updateItem" role="form" class="form-inline">
+                <div class="formDiv">
+
+                    <div><label for="itemProductId">Producte</label></div>
+                    <div>
+                        <h:selectOneListbox value="#{itemBean.item.product}" style="width:100%;" size="1"
+                                            class="browser-default custom-select" id="itemProductId">
+                            <f:selectItem itemLabel="Seleccione un producte" itemValue="#{null}" itemDisabled="true"/>
+                            <f:selectItems value="#{itemBean.allProductSelectItem}"/>
+                        </h:selectOneListbox>
+                        <small id="productIdMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="itemProductId"/>
+                        </small>
+                    </div>
+
+                    <div><label for="itemSerialNumber">Número de serie</label></div>
+                    <div>
+                        <h:inputText value="#{itemBean.item.serialNumber}" type="text" style="width:100%;"
+                                     class="form-control" id="itemSerialNumber" maxlength="50"
+                                     p:placeholder="Introdueix un número de serie"/>
+                        <small id="serialNumberMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="itemSerialNumber"/>
+                        </small>
+                    </div>
+
+                    <div><label for="itemStatus">Estat</label></div>
+                    <div>
+                        <h:selectOneListbox value="#{itemBean.item.status}" style="width:100%;" size="1"
+                                            class="browser-default custom-select" id="itemStatus">
+                            <f:selectItem itemLabel="Seleccione un estat" itemValue="#{null}" itemDisabled="true"/>
+                            <c:forEach items="#{itemBean.status}" var="status">
+                                <f:selectItem itemValue="#{status}"/>
+                            </c:forEach>
+
+                        </h:selectOneListbox>
+                        <small id="statusMessage" class="form-text text-error">
+                            <h:message class="text-danger" for="itemStatus"/>
+                        </small>
+                    </div>
+
+                    <div class="formSubmit">
+                        <h:commandButton value="#{itemBean.item.id==null?'Accepta':'Modifica'}"
+                                         type="submit"
+                                         styleClass="btn btn-primary btn-form blue"
+                                         action="#{itemBean.save}"/>
+                        <h:button value="Cancel·la"
+                                  styleClass="btn btn-primary btn-form white"
+                                  outcome="listItems.xhtml"/>
+                    </div>
+                </div>
+                <h:inputHidden value="#{itemBean.id}"/>
+                <h:inputHidden value="#{itemBean.source}"/>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

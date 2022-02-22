@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+    <c:choose>
+        <c:when test="#{auth.authenticated}">
+            <div class="dropdown user-dropdown">
+                    <span class="dropdown-toggle" id="userMenu" data-toggle="dropdown" aria-haspopup="true"
+                          aria-expanded="false">
+                        <i class="fas fa-user"/>
+                    </span>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                    <div class="user-name">Hola <h:outputText value="#{auth.username}"/>!</div>
+                    <div class="dropdown-divider"></div>
+                    <h:link rendered="#{auth.customer}" outcome="/customer/showCustomer" value="El meu perfil"
+                            styleClass="dropdown-item"/>
+                    <h:link rendered="#{auth.customer}" outcome="/customer/rent/myRents" value="Els meus lloguers"
+                            styleClass="dropdown-item"/>
+                    <h:link outcome="/logout" value="Logout" styleClass="dropdown-item"/>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <h:link outcome="/login" value="Login" styleClass="btn login-btn ml-2"/>
+        </c:otherwise>
+    </c:choose>
+</div>

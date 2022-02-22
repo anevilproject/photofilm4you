@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <div class="profile-container">
+            <div class="row mb-4">
+                <div class="col-4 navegation-profile">
+                    <ul>
+                        <li><h:link outcome="/customer/showCustomer">El meu perfil</h:link></li>
+                        <li class="active"><a href="#">Actualitzar el meu perfil</a></li>
+                        <li><h:link outcome="/customer/rent/myRents">Els meus lloguers</h:link></li>
+                        <li><h:link outcome="/logout">Logout</h:link></li>
+                    </ul>
+                </div>
+                <div class="col-8 update-customer-container">
+                    <!-- MODIFICAR dades d'un customer -->
+                    <h:form id="updateCustomerForm" role="form">
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-user"/></div>
+                                        </div>
+
+                                        <h:inputHidden value="#{updateCustomerBean.customer.id}" id="id"/>
+
+                                        <h:inputText value="#{updateCustomerBean.customer.name}" type="text"
+                                                     title="Introdueix el nom"
+                                                     class="form-control" id="name" maxlength="50"
+                                                     p:placeholder="Introdueix el nom">
+                                        </h:inputText>
+                                    </div>
+                                    <small id="nameMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="name"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-user"/></div>
+                                        </div>
+                                        <h:inputText value="#{updateCustomerBean.customer.surname}" type="text"
+                                                     title="Introdueix els cognoms" class="form-control" id="surname"
+                                                     maxlength="50"
+                                                     p:placeholder="Introdueix els cognoms">
+                                        </h:inputText>
+                                    </div>
+                                    <small id="surnameMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="surname"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-user"/></div>
+                                        </div>
+                                        <h:inputText value="#{updateCustomerBean.customer.nif}" type="text"
+                                                     title="Introdueix el nif" class="form-control" id="nif"
+                                                     maxlength="50"
+                                                     p:placeholder="Introdueix el nif">
+                                        </h:inputText>
+                                    </div>
+                                    <small id="nifMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="nif"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-phone"/></div>
+                                        </div>
+                                        <h:inputText value="#{updateCustomerBean.customer.phone}" type="text"
+                                                     title="Introdueix el telèfon" class="form-control" id="phone"
+                                                     maxlength="25"
+                                                     p:placeholder="Introdueix el telèfon">
+                                        </h:inputText>
+                                    </div>
+                                    <small id="phoneMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="phone"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-map-marker-alt"/></div>
+                                        </div>
+                                        <h:inputText value="#{updateCustomerBean.customer.address}" type="text"
+                                                     title="Introdueix una adreça" class="form-control" id="address"
+                                                     maxlength="100"
+                                                     p:placeholder="Introdueix una adreça">
+                                        </h:inputText>
+                                    </div>
+                                    <small id="addressMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="address"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-lock"/></div>
+                                        </div>
+                                        <h:inputSecret value="#{updateCustomerBean.password}" class="form-control"
+                                                       title="Introdueix la contrasenya" id="password"
+                                                       p:placeholder="Introdueix la contrasenya"/>
+                                    </div>
+                                    <small id="passwordMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="password"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-outline">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"><i class="fas fa-lock"/></div>
+                                        </div>
+                                        <h:inputSecret value="#{updateCustomerBean.userPasswordRepeat}"
+                                                       title="Repeteix la contrasenya" class="form-control"
+                                                       id="userPasswordRepeat"
+                                                       p:placeholder="Repeteix la contrasenya"/>
+                                    </div>
+                                    <small id="userPasswordRepeatMessage" class="form-text text-error">
+                                        <h:message class="text-danger" for="userPasswordRepeat"/>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="login-btn mb-4 text-center">
+                            <p class="mb-4 notice text-center">Deixa la contrasenya i la confirmació de la contrasenya en blanc per no canviar-la.</p>
+
+                            <h:commandButton value="Actualitzar" type="submit" class="btn btn-primary mt-4"
+                                             action="#{updateCustomerBean.save()}"/>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

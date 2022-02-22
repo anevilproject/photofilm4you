@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:dataTable value="#{items}" var="item" rowClasses="#{rowClasses}"
+                 styleClass="table text-nowrap nomargin-bottom"
+                 width="100%"
+                 binding="#{table}">
+        <h:column>
+            <f:facet name="header">
+                <h:outputText styleClass="table-header" value="#"/>
+            </f:facet>
+            <h:outputText value="#{table.rowIndex + 1}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText styleClass="table-header" value="Producte"/>
+            </f:facet>
+            <h:outputText value="#{item.product.name}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText styleClass="table-header" value="Num. Serie"/>
+            </f:facet>
+            <h:outputText value="#{item.serialNumber}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText styleClass="table-header" value="Estat"/>
+            </f:facet>
+            <h:outputText value="#{item.status}"/>
+        </h:column>
+        <h:column headerClass="colIcon">
+            <h:link outcome="/back/item/updateItem" rendered="#{item.deleted==null}">
+                <f:param name="itemId" value="#{item.id}"/>
+                <i class="fas fa-pen"/>
+            </h:link>
+        </h:column>
+        <h:column headerClass="colIcon">
+            <h:panelGroup rendered="#{item.deleted==null}">
+                <i class="fas fa-trash-alt" data-toggle="modal" data-target="#ItemDeleteModal"
+                   onclick="$('#ItemDelete\\:deleteItemId').val('#{item.id}')"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{item.deleted!=null}">
+                <i class="fas fa-history" data-toggle="modal" data-target="#ItemReactivateModal"
+                   onclick="$('#ItemReactivate\\:reactivateItemId').val('#{item.id}')"/>
+            </h:panelGroup>
+        </h:column>
+    </h:dataTable>
+
+    <h:form id="ItemDelete">
+        <!-- Modal -->
+        <div class="modal fade" id="ItemDeleteModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar item?</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <i class="fas fa-times"/>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Estàs segur que vols eliminar aquest item?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary flat white"
+                                data-dismiss="modal">CANCEL·LA
+                        </button>
+                        <h:commandButton type="submit" value="ELIMINA" class="btn btn-primary flat"
+                                         action="#{itemBean.delete}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h:inputHidden value="#{itemBean.source}"/>
+        <h:inputHidden value="#{itemBean.id}" id="deleteItemId"/>
+    </h:form>
+    <h:form id="ItemReactivate">
+        <!-- Modal -->
+        <div class="modal fade" id="ItemReactivateModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content eliminar">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Reactivar item?</h5>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <i class="fas fa-times"/>
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <h:column>
+                            <button type="button" class="btn btn-primary flat white"
+                                    data-dismiss="modal">CANCEL·LA
+                            </button>
+                        </h:column>
+                        <h:column><h:commandButton type="submit" value="REACTIVA" class="btn btn-primary flat"
+                                                   action="#{itemBean.reactivate()}"/>
+                        </h:column>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h:inputHidden value="#{itemBean.source}"/>
+        <h:inputHidden value="#{itemBean.id}" id="reactivateItemId"/>
+    </h:form>
+</div>

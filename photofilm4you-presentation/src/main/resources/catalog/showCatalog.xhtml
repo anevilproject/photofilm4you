@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+    <f:viewParam name="categoryId" value="#{frontProductsBean.category}"/>
+    <f:viewParam name="brand" value="#{frontProductsBean.brand}"/>
+    <f:viewParam name="model" value="#{frontProductsBean.model}"/>
+    <f:viewParam name="name" value="#{frontProductsBean.name}"/>
+</f:metadata>
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <!-- Categories -->
+        <ui:include src="/WEB-INF/component/front/categories.xhtml"/>
+
+        <div class="catalog-container">
+
+            <!-- Producte filters -->
+            <div class="filters">
+                <div class="card">
+                    <form method="get">
+                        <div class="card-body">
+                            <h5 class="card-title">Filtres</h5>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-search"/></div>
+                                </div>
+                                <input type="text"
+                                       class="form-control"
+                                       id="search"
+                                       value="#{frontProductsBean.name}"
+                                       name="name"
+                                       placeholder="Cerca un producte"/>
+                            </div>
+                            <h6 class="card-title text-muted mt-4">Marca</h6>
+                            <div class="filter-options">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="brand"
+                                           id="brand1"
+                                           value=""
+                                           checked="#{empty frontProductsBean.brand ? 'checked' : ''}"/>
+                                    <label class="form-check-label" for="brand1">Sense filtre</label>
+                                </div>
+
+                                <c:forEach items="#{frontProductsBean.brands}" var="brand">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="brand"
+                                               id="#{brand.id}"
+                                               value="#{brand.id}"
+                                               checked="#{frontProductsBean.brand eq brand.id ? 'checked' : ''}"/>
+                                        <label class="form-check-label"
+                                               for="#{brand.id}">#{brand.name.toLowerCase()}</label>
+                                    </div>
+                                </c:forEach>
+                            </div>
+
+                            <h6 class="card-title text-muted mt-4">Model</h6>
+                            <div class="filter-options">
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="radio"
+                                           name="model"
+                                           id="model1"
+                                           value=""
+                                           checked="#{empty frontProductsBean.model ? 'checked' : ''}"/>
+                                    <label class="form-check-label" for="model1">
+                                        Sense filtre
+                                    </label>
+                                </div>
+
+                                <c:forEach items="#{frontProductsBean.models}" var="model">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="radio"
+                                               name="model"
+                                               id="#{model.id}"
+                                               value="#{model.id}"
+                                               checked="#{frontProductsBean.model eq model.id ? 'checked' : ''}"/>
+                                        <label class="form-check-label" for="#{model.id}">
+                                            #{model.name.toLowerCase()}
+                                        </label>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <div class="text-center">
+                                <input type="submit" value="APLICA" class="btn btn-primary mt-4"/>
+                            </div>
+                        </div>
+                        <input type="hidden" name="categoryId" value="#{frontProductsBean.category}"/>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Display products -->
+            <div class="catalog-content">
+                <div class="page-title px-5 ml-3 mb-3">
+                    <h:outputText value="#{frontCategoriesBean.resolvePath(frontProductsBean.category)}"/>
+                </div>
+
+                <div class="change-date-container">
+                    <c:if test="#{not auth.authenticated}">
+                        <div class="text-muted mb-3">
+                            Vols reservar un producte? Fes
+                            <h:link outcome="/login" value="login">
+                                <f:param name="referer" value="#{auth.referer}"/>
+                            </h:link>
+                            per consultar la disponibilitat.
+                        </div>
+                    </c:if>
+                    <c:if test="#{auth.customer}">
+                        <ui:include src="/WEB-INF/component/front/datesForm.xhtml"/>
+                    </c:if>
+                </div>
+
+                <ui:include src="/WEB-INF/component/front/products.xhtml">
+                    <ui:param name="showUnits" value="#{true}"/>
+                    <ui:param name="products" value="#{frontProductsBean.products}"/>
+                </ui:include>
+                <c:if test="#{empty frontProductsBean.products}">
+                    <div class="empty-search-container">
+                        <img class="empty-search-image" src="#{resource['images:empty_search.png']}"/>
+                        <div class="empty-search-text">
+                            Vaja! Sembla que no hi ha resultats. Pova a ajustar els filtres.
+                        </div>
+                    </div>
+                </c:if>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

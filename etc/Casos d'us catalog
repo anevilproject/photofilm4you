@@ -1,0 +1,51 @@
+LLISTAR CATEGORIES - BACKEND
+Llista totes les categories incloent les que tenen deleted date. Com les diferenciem?
+He afegit una columna Estat: Activa /Inactiva-> to approve
+Si el status es deleted, no tenen boto d'editar o esborrar.
+He afegit un boto "reactivar""-> to approve
+El boto de reactivar esborra la data de delete.
+++++++++++++++++++++++++++++++++++++++++++
+
+LLISTAR CATEGORIES - FRONTEND
+Llista nomes mostra les categories actives (que no tenen data d'esborrat).
+Closed
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR CATEGORIES - FRONTEND
+No es pot fer
+Closed
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR CATEGORIES - BACKEND
+Boto crear que porta a la pagina updateCategory
+Demana un nom (no es pot fer servir un ja utilitzat)
+TODO: crear un missatge d'error quan el nom ja estigui fet servir
+TODO: afegir la categoria pare
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR BRAND- FRONTEND
+No es pot fer
+Closed
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR BRAND - BACKEND
+Boto crear que porta a la pagina updateBrand
+Demana un nom (no es pot fer servir un ja utilitzat)
+TODO: crear un missatge d'error quan el nom ja estigui fet servir
+TODO: afegir la mateixa functionalitat de categoria si hem esborrat el brand
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR MODEL - FRONTEND
+No es pot fer
+Closed
+++++++++++++++++++++++++++++++++++++++++++
+
+CREAR MODEL - BACKEND
+Boto crear que porta a la pagina updateModel
+TODO: afegir el brand
+
+
+
+
+
+

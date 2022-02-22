@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+>
+
+    <h:dataTable value="#{rents}" var="rent" styleClass="table text-nowrap nomargin-bottom" width="100%">
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="ID"/>
+            </f:facet>
+            <h:outputText value="#{rent.id}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Creat"/>
+            </f:facet>
+            <h:outputText value="#{rent.created}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Dates"/>
+            </f:facet>
+            <h:outputText value="#{rent.from}"/> - <h:outputText value="#{rent.to}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Preu"/>
+            </f:facet>
+            <h:outputText value="#{rent.totalPrice}"/> €
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Estat"/>
+            </f:facet>
+            <h:outputText value="#{rent.status}"/>
+        </h:column>
+        <h:column>
+            <f:facet name="header">
+                <h:outputText value="Penalització pagada"/>
+            </f:facet>
+            <h:outputText rendered="#{rent.cancelled}" value="#{rent.cancellation.status == 'PENDING' ? 'No' : 'Sí'}"/>
+            <h:outputText rendered="#{not rent.cancelled}" value="-"/>
+        </h:column>
+        <h:column headerClass="colIcon">
+            <h:link outcome="/back/rent/showRent">
+                <f:param name="rentId" value="#{rent.id}"/>
+                <f:param name="referer" value="#{referer}"/>
+                <i class="fas fa-eye"/>
+            </h:link>
+        </h:column>
+    </h:dataTable>
+</div>

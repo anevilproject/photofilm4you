@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+>
+
+<ui:composition template="../WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+        <div class="profile-container">
+            <div class="row mb-4">
+                <div class="col-4 navegation-profile">
+                    <ul>
+                        <li class="active"><a href="#">El meu perfil</a></li>
+                        <li><h:link outcome="/customer/updateCustomer">Actualitzar el meu perfil</h:link></li>
+                        <li><h:link outcome="/customer/rent/myRents">Els meus lloguers</h:link></li>
+                        <li><h:link outcome="/logout">Logout</h:link></li>
+                    </ul>
+                </div>
+                <div class="col-8 update-customer-container">
+                    <!-- SHOW dades d'un customer -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <p><span
+                                    class="field-name-customer">Data registre:</span> #{updateCustomerBean.customer.date}
+                            </p>
+                            <p><span class="field-name-customer">Nom:</span> #{updateCustomerBean.customer.name}</p>
+                            <p><span class="field-name-customer">Cognoms:</span> #{updateCustomerBean.customer.surname}
+                            </p>
+                            <p><span class="field-name-customer">NIF:</span> #{updateCustomerBean.customer.nif}</p>
+                            <p><span class="field-name-customer">Telèfon:</span> #{updateCustomerBean.customer.phone}
+                            </p>
+                            <p><span class="field-name-customer">Email:</span> #{updateCustomerBean.customer.email}</p>
+                            <p><span class="field-name-customer">Adreça:</span> #{updateCustomerBean.customer.address}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>

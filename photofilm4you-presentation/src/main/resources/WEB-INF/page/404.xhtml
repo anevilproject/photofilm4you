@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html">
+
+<ui:composition template="/WEB-INF/template/frontLayout.xhtml">
+    <ui:define name="content">
+
+        <div class="error-container">
+            <i class="fa-6x fa-frown far mt-5"/>
+            <div class="error-message font-weight-bold my-5">NO HEM TROBAT AQUESTA PÀGINA.</div>
+            <div class="text-center">
+                <h:link outcome="/index" value="TORNA A L'INICI" styleClass="btn btn-primary"/>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>
